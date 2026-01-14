@@ -85,7 +85,7 @@ public partial class AdminWindow : Window
         UpdateColorPreviews();
     }
 
-    private void SetComboBoxByTag(ComboBox comboBox, string tag)
+    private void SetComboBoxByTag(System.Windows.Controls.ComboBox comboBox, string tag)
     {
         foreach (ComboBoxItem item in comboBox.Items)
         {
@@ -98,7 +98,7 @@ public partial class AdminWindow : Window
         comboBox.SelectedIndex = 0;
     }
 
-    private void SetComboBoxByContent(ComboBox comboBox, string content)
+    private void SetComboBoxByContent(System.Windows.Controls.ComboBox comboBox, string content)
     {
         foreach (ComboBoxItem item in comboBox.Items)
         {
@@ -111,12 +111,12 @@ public partial class AdminWindow : Window
         comboBox.SelectedIndex = 0;
     }
 
-    private string GetComboBoxTag(ComboBox comboBox)
+    private string GetComboBoxTag(System.Windows.Controls.ComboBox comboBox)
     {
         return (comboBox.SelectedItem as ComboBoxItem)?.Tag?.ToString() ?? "RunExecutable";
     }
 
-    private string GetComboBoxContent(ComboBox comboBox)
+    private string GetComboBoxContent(System.Windows.Controls.ComboBox comboBox)
     {
         return (comboBox.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? "Segoe UI";
     }
@@ -368,7 +368,7 @@ public partial class AdminWindow : Window
         BrowseCustomButtonTarget(CustomButton2ActionCombo, CustomButton2TargetInput);
     }
 
-    private void BrowseCustomButtonTarget(ComboBox actionCombo, TextBox targetInput)
+    private void BrowseCustomButtonTarget(System.Windows.Controls.ComboBox actionCombo, System.Windows.Controls.TextBox targetInput)
     {
         var actionType = GetComboBoxTag(actionCombo);
 

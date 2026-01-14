@@ -1,5 +1,4 @@
 using System.Windows;
-using System.Windows.Input;
 using SimLock.Common;
 
 namespace SimLock.Admin;
@@ -20,9 +19,9 @@ public partial class LoginWindow : Window
         AttemptLogin();
     }
 
-    private void PasswordInput_KeyDown(object sender, KeyEventArgs e)
+    private void PasswordInput_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
     {
-        if (e.Key == Key.Enter)
+        if (e.Key == System.Windows.Input.Key.Enter)
         {
             AttemptLogin();
         }
