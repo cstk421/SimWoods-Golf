@@ -6,9 +6,11 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
-using Microsoft.Win32;
 using SimLock.Common;
 using WinForms = System.Windows.Forms;
+using WpfColor = System.Windows.Media.Color;
+using WpfMessageBox = System.Windows.MessageBox;
+using WpfOpenFileDialog = Microsoft.Win32.OpenFileDialog;
 
 namespace SimLock.Admin;
 
@@ -85,7 +87,7 @@ public partial class AdminWindow : Window
         UpdateColorPreviews();
     }
 
-    private void SetComboBoxByTag(System.Windows.Controls.ComboBox comboBox, string tag)
+    private void SetComboBoxByTag(ComboBox comboBox, string tag)
     {
         foreach (ComboBoxItem item in comboBox.Items)
         {
@@ -98,7 +100,7 @@ public partial class AdminWindow : Window
         comboBox.SelectedIndex = 0;
     }
 
-    private void SetComboBoxByContent(System.Windows.Controls.ComboBox comboBox, string content)
+    private void SetComboBoxByContent(ComboBox comboBox, string content)
     {
         foreach (ComboBoxItem item in comboBox.Items)
         {
@@ -111,12 +113,12 @@ public partial class AdminWindow : Window
         comboBox.SelectedIndex = 0;
     }
 
-    private string GetComboBoxTag(System.Windows.Controls.ComboBox comboBox)
+    private string GetComboBoxTag(ComboBox comboBox)
     {
         return (comboBox.SelectedItem as ComboBoxItem)?.Tag?.ToString() ?? "RunExecutable";
     }
 
-    private string GetComboBoxContent(System.Windows.Controls.ComboBox comboBox)
+    private string GetComboBoxContent(ComboBox comboBox)
     {
         return (comboBox.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? "Segoe UI";
     }
@@ -181,7 +183,7 @@ public partial class AdminWindow : Window
         if (_config.IsActivated)
         {
             ActivationStatusText.Text = "Activated";
-            ActivationStatusText.Foreground = new SolidColorBrush(Color.FromRgb(76, 175, 80)); // Green
+            ActivationStatusText.Foreground = new SolidColorBrush(WpfColor.FromRgb(76, 175, 80)); // Green
             ActivationEmailDisplay.Text = _config.ActivationEmail;
             LicenseBalanceText.Text = "";
             ActivationInputPanel.Visibility = Visibility.Collapsed;
@@ -190,7 +192,7 @@ public partial class AdminWindow : Window
         else
         {
             ActivationStatusText.Text = "Not Activated";
-            ActivationStatusText.Foreground = new SolidColorBrush(Color.FromRgb(244, 67, 54)); // Red
+            ActivationStatusText.Foreground = new SolidColorBrush(WpfColor.FromRgb(244, 67, 54)); // Red
             LicenseBalanceText.Text = "";
             ActivationInputPanel.Visibility = Visibility.Visible;
             ActivatedPanel.Visibility = Visibility.Collapsed;
@@ -204,14 +206,14 @@ public partial class AdminWindow : Window
         if (string.IsNullOrEmpty(email) || !email.Contains("@"))
         {
             ActivationStatusText.Text = "Please enter a valid email";
-            ActivationStatusText.Foreground = new SolidColorBrush(Color.FromRgb(244, 67, 54));
+            ActivationStatusText.Foreground = new SolidColorBrush(WpfColor.FromRgb(244, 67, 54));
             return;
         }
 
         ActivateButton.IsEnabled = false;
         ActivateButton.Content = "Checking...";
         ActivationStatusText.Text = "Checking license...";
-        ActivationStatusText.Foreground = new SolidColorBrush(Color.FromRgb(33, 150, 243)); // Blue
+        ActivationStatusText.Foreground = new SolidColorBrush(WpfColor.FromRgb(33, 150, 243)); // Blue
 
         try
         {
@@ -242,13 +244,13 @@ public partial class AdminWindow : Window
                 }
 
                 ActivationStatusText.Text = result.Message;
-                ActivationStatusText.Foreground = new SolidColorBrush(Color.FromRgb(244, 67, 54)); // Red
+                ActivationStatusText.Foreground = new SolidColorBrush(WpfColor.FromRgb(244, 67, 54)); // Red
             }
         }
         catch (Exception ex)
         {
             ActivationStatusText.Text = $"Error: {ex.Message}";
-            ActivationStatusText.Foreground = new SolidColorBrush(Color.FromRgb(244, 67, 54)); // Red
+            ActivationStatusText.Foreground = new SolidColorBrush(WpfColor.FromRgb(244, 67, 54)); // Red
         }
         finally
         {
@@ -259,7 +261,7 @@ public partial class AdminWindow : Window
 
     private async void Deactivate_Click(object sender, RoutedEventArgs e)
     {
-        var result = MessageBox.Show(
+        var result = WpfMessageBox.Show(
             "Are you sure you want to deactivate this machine?\n\nThis will free up one activation for use on another machine.",
             "Confirm Deactivation",
             MessageBoxButton.YesNo,
@@ -269,7 +271,7 @@ public partial class AdminWindow : Window
             return;
 
         ActivationStatusText.Text = "Deactivating...";
-        ActivationStatusText.Foreground = new SolidColorBrush(Color.FromRgb(33, 150, 243)); // Blue
+        ActivationStatusText.Foreground = new SolidColorBrush(WpfColor.FromRgb(33, 150, 243)); // Blue
 
         try
         {
@@ -287,7 +289,7 @@ public partial class AdminWindow : Window
 
                 UpdateActivationUI();
                 ActivationStatusText.Text = "Deactivated successfully";
-                ActivationStatusText.Foreground = new SolidColorBrush(Color.FromRgb(76, 175, 80)); // Green
+                ActivationStatusText.Foreground = new SolidColorBrush(WpfColor.FromRgb(76, 175, 80)); // Green
 
                 // Reset to "Not Activated" after a moment
                 var timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(2) };
@@ -301,13 +303,13 @@ public partial class AdminWindow : Window
             else
             {
                 ActivationStatusText.Text = $"Failed: {deactivateResult.Message}";
-                ActivationStatusText.Foreground = new SolidColorBrush(Color.FromRgb(244, 67, 54)); // Red
+                ActivationStatusText.Foreground = new SolidColorBrush(WpfColor.FromRgb(244, 67, 54)); // Red
             }
         }
         catch (Exception ex)
         {
             ActivationStatusText.Text = $"Error: {ex.Message}";
-            ActivationStatusText.Foreground = new SolidColorBrush(Color.FromRgb(244, 67, 54)); // Red
+            ActivationStatusText.Foreground = new SolidColorBrush(WpfColor.FromRgb(244, 67, 54)); // Red
         }
     }
 
@@ -368,14 +370,14 @@ public partial class AdminWindow : Window
         BrowseCustomButtonTarget(CustomButton2ActionCombo, CustomButton2TargetInput);
     }
 
-    private void BrowseCustomButtonTarget(System.Windows.Controls.ComboBox actionCombo, System.Windows.Controls.TextBox targetInput)
+    private void BrowseCustomButtonTarget(ComboBox actionCombo, TextBox targetInput)
     {
         var actionType = GetComboBoxTag(actionCombo);
 
         switch (actionType)
         {
             case "RunExecutable":
-                var exeDialog = new OpenFileDialog
+                var exeDialog = new WpfOpenFileDialog
                 {
                     Filter = "Executable Files|*.exe|All Files|*.*",
                     Title = "Select Executable"
@@ -387,7 +389,7 @@ public partial class AdminWindow : Window
                 break;
 
             case "PlayLocalVideo":
-                var videoDialog = new OpenFileDialog
+                var videoDialog = new WpfOpenFileDialog
                 {
                     Filter = "Video Files|*.mp4;*.avi;*.mkv;*.wmv;*.mov|All Files|*.*",
                     Title = "Select Video File"
@@ -399,7 +401,7 @@ public partial class AdminWindow : Window
                 break;
 
             case "OpenUrl":
-                MessageBox.Show("Please enter the URL directly in the text field.",
+                WpfMessageBox.Show("Please enter the URL directly in the text field.",
                     "URL Input", MessageBoxButton.OK, MessageBoxImage.Information);
                 break;
         }
@@ -411,7 +413,7 @@ public partial class AdminWindow : Window
 
     private void BrowseSplashBackground_Click(object sender, RoutedEventArgs e)
     {
-        var dialog = new OpenFileDialog
+        var dialog = new WpfOpenFileDialog
         {
             Filter = "Image Files|*.png;*.jpg;*.jpeg;*.bmp|All Files|*.*",
             Title = "Select Splash Background Image"
@@ -430,7 +432,7 @@ public partial class AdminWindow : Window
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error copying image: {ex.Message}", "Error",
+                WpfMessageBox.Show($"Error copying image: {ex.Message}", "Error",
                     MessageBoxButton.OK, MessageBoxImage.Error);
                 SplashBackgroundInput.Text = dialog.FileName;
             }
@@ -445,7 +447,7 @@ public partial class AdminWindow : Window
         if (string.IsNullOrWhiteSpace(UnlockCodeInput.Text) || UnlockCodeInput.Text.Length != 4 ||
             !UnlockCodeInput.Text.All(char.IsDigit))
         {
-            MessageBox.Show("Unlock code must be exactly 4 digits.", "Validation Error",
+            WpfMessageBox.Show("Unlock code must be exactly 4 digits.", "Validation Error",
                 MessageBoxButton.OK, MessageBoxImage.Warning);
             return;
         }
@@ -453,7 +455,7 @@ public partial class AdminWindow : Window
         // Validate admin password
         if (string.IsNullOrWhiteSpace(AdminPasswordInput.Text))
         {
-            MessageBox.Show("Admin password cannot be empty.", "Validation Error",
+            WpfMessageBox.Show("Admin password cannot be empty.", "Validation Error",
                 MessageBoxButton.OK, MessageBoxImage.Warning);
             return;
         }
@@ -513,7 +515,7 @@ public partial class AdminWindow : Window
         var originalContent = SaveButton.Content;
         var originalBackground = SaveButton.Background;
         SaveButton.Content = "Saved!";
-        SaveButton.Background = new SolidColorBrush(Color.FromRgb(76, 175, 80)); // Bright green
+        SaveButton.Background = new SolidColorBrush(WpfColor.FromRgb(76, 175, 80)); // Bright green
 
         var timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1.5) };
         timer.Tick += (s, args) =>
@@ -527,7 +529,7 @@ public partial class AdminWindow : Window
 
     private void BrowseVideo_Click(object sender, RoutedEventArgs e)
     {
-        var dialog = new OpenFileDialog
+        var dialog = new WpfOpenFileDialog
         {
             Filter = "Video Files|*.mp4;*.avi;*.mkv;*.wmv;*.mov|All Files|*.*",
             Title = "Select Tutorial Video"
@@ -542,12 +544,12 @@ public partial class AdminWindow : Window
                 File.Copy(dialog.FileName, destPath, overwrite: true);
                 VideoPathInput.Text = destPath;
                 _config.LocalVideoPath = destPath;
-                MessageBox.Show("Video copied successfully!", "Success",
+                WpfMessageBox.Show("Video copied successfully!", "Success",
                     MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error copying video: {ex.Message}", "Error",
+                WpfMessageBox.Show($"Error copying video: {ex.Message}", "Error",
                     MessageBoxButton.OK, MessageBoxImage.Error);
                 VideoPathInput.Text = dialog.FileName;
             }
@@ -556,7 +558,7 @@ public partial class AdminWindow : Window
 
     private void BrowseSplashImage_Click(object sender, RoutedEventArgs e)
     {
-        var dialog = new OpenFileDialog
+        var dialog = new WpfOpenFileDialog
         {
             Filter = "Image Files|*.png;*.jpg;*.jpeg;*.bmp|All Files|*.*",
             Title = "Select Splash Logo Image"
@@ -575,7 +577,7 @@ public partial class AdminWindow : Window
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error copying image: {ex.Message}", "Error",
+                WpfMessageBox.Show($"Error copying image: {ex.Message}", "Error",
                     MessageBoxButton.OK, MessageBoxImage.Error);
                 SplashImageInput.Text = dialog.FileName;
             }
@@ -584,7 +586,7 @@ public partial class AdminWindow : Window
 
     private void BrowseLogo_Click(object sender, RoutedEventArgs e)
     {
-        var dialog = new OpenFileDialog
+        var dialog = new WpfOpenFileDialog
         {
             Filter = "Image Files|*.png;*.jpg;*.jpeg;*.bmp|All Files|*.*",
             Title = "Select Logo Image"
@@ -604,7 +606,7 @@ public partial class AdminWindow : Window
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error copying logo: {ex.Message}", "Error",
+                WpfMessageBox.Show($"Error copying logo: {ex.Message}", "Error",
                     MessageBoxButton.OK, MessageBoxImage.Error);
                 LogoPathInput.Text = dialog.FileName;
                 _config.LogoPath = dialog.FileName;
@@ -617,7 +619,7 @@ public partial class AdminWindow : Window
     {
         if (_isDownloading)
         {
-            MessageBox.Show("Download already in progress.", "Info",
+            WpfMessageBox.Show("Download already in progress.", "Info",
                 MessageBoxButton.OK, MessageBoxImage.Information);
             return;
         }
@@ -625,7 +627,7 @@ public partial class AdminWindow : Window
         var url = VideoUrlInput.Text;
         if (string.IsNullOrWhiteSpace(url))
         {
-            MessageBox.Show("Please enter a video URL first.", "Error",
+            WpfMessageBox.Show("Please enter a video URL first.", "Error",
                 MessageBoxButton.OK, MessageBoxImage.Warning);
             return;
         }
@@ -664,7 +666,7 @@ public partial class AdminWindow : Window
                 _config.LocalVideoPath = outputPath;
                 _config.Save();
                 DownloadStatusText.Text = "Download complete!";
-                MessageBox.Show("Video downloaded successfully!", "Success",
+                WpfMessageBox.Show("Video downloaded successfully!", "Success",
                     MessageBoxButton.OK, MessageBoxImage.Information);
             }
             else
@@ -675,7 +677,7 @@ public partial class AdminWindow : Window
         catch (Exception ex)
         {
             DownloadStatusText.Text = "Download failed.";
-            MessageBox.Show($"Error downloading video: {ex.Message}", "Error",
+            WpfMessageBox.Show($"Error downloading video: {ex.Message}", "Error",
                 MessageBoxButton.OK, MessageBoxImage.Error);
         }
         finally
@@ -709,7 +711,7 @@ public partial class AdminWindow : Window
         if (Directory.Exists(extractDir))
             Directory.Delete(extractDir, true);
 
-        ZipFile.ExtractToDirectory(tempZip, extractDir);
+        System.IO.Compression.ZipFile.ExtractToDirectory(tempZip, extractDir);
 
         var ffmpegExe = Directory.GetFiles(extractDir, "ffmpeg.exe", SearchOption.AllDirectories).FirstOrDefault();
         if (ffmpegExe != null)
@@ -783,7 +785,7 @@ public partial class AdminWindow : Window
         }
         else
         {
-            MessageBox.Show(
+            WpfMessageBox.Show(
                 "SimLock.exe not found. Please build the SimLock.Locker project first.",
                 "Not Found",
                 MessageBoxButton.OK,
@@ -819,7 +821,7 @@ public partial class AdminWindow : Window
 
     private void CommonApp_Click(object sender, RoutedEventArgs e)
     {
-        if (sender is System.Windows.Controls.Button button && button.Tag is string processName)
+        if (sender is Button button && button.Tag is string processName)
         {
             MonitoredProcessInput.Text = processName;
         }
@@ -834,7 +836,7 @@ public partial class AdminWindow : Window
             if (targetInput == null) return;
 
             // Parse current color
-            Color currentColor = Colors.Gray;
+            WpfColor currentColor = Colors.Gray;
             try
             {
                 currentColor = ThemeManager.ParseColor(targetInput.Text);
@@ -854,7 +856,7 @@ public partial class AdminWindow : Window
                 var selectedColor = colorDialog.Color;
                 var hexColor = $"#{selectedColor.R:X2}{selectedColor.G:X2}{selectedColor.B:X2}";
                 targetInput.Text = hexColor;
-                border.Background = new SolidColorBrush(Color.FromRgb(selectedColor.R, selectedColor.G, selectedColor.B));
+                border.Background = new SolidColorBrush(WpfColor.FromRgb(selectedColor.R, selectedColor.G, selectedColor.B));
             }
         }
     }

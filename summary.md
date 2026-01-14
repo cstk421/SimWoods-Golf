@@ -164,6 +164,19 @@ sudo systemctl restart simlock-activation
 9. **Status messages** - Activation status shows in UI instead of popups
 10. **App icon support** - Installer uses custom icon
 
+## v2.0.1 - Namespace Conflict Fixes
+
+Fixed WinForms/WPF namespace conflicts introduced by `UseWindowsForms=true` in csproj:
+
+- **AdminWindow.xaml.cs** - Rewrote with using aliases to resolve ambiguous types:
+  - `WpfColor = System.Windows.Media.Color`
+  - `WpfMessageBox = System.Windows.MessageBox`
+  - `WpfOpenFileDialog = Microsoft.Win32.OpenFileDialog`
+  - `WinForms = System.Windows.Forms` (for color picker dialog)
+- **LoginWindow.xaml.cs** - Fixed `KeyEventArgs` ambiguity with fully qualified `System.Windows.Input.KeyEventArgs`
+- **App.xaml.cs** - Fixed `Application` ambiguity with fully qualified `System.Windows.Application`
+- **ProcessSelectorDialog.xaml.cs** - Fixed `MessageBox` ambiguity with fully qualified `System.Windows.MessageBox`
+
 ## License
 Copyright (c) NeutroCorp LLC. All rights reserved.
 
@@ -191,16 +204,16 @@ Key files:
 GitHub: https://github.com/cstk421/SimWoods-Golf
 
 Last session completed:
-- Fixed password field visibility
-- Save button shows "Saved!" momentarily
-- Removed save from Test button
-- Added color picker dialogs
-- Added 12 font options
-- Clarified theme color labels
-- Added common apps button (GSPRO Launcher)
-- Fixed activation server missing /api/check-email endpoint
-- Status messages show in License Status field
-- Added app.ico support for installer
+- Fixed WinForms/WPF namespace conflicts (CS0104 errors)
+- AdminWindow.xaml.cs rewritten with using aliases
+- LoginWindow.xaml.cs, App.xaml.cs, ProcessSelectorDialog.xaml.cs fixed
+- All Color, MessageBox, OpenFileDialog ambiguities resolved
+
+Previous session (v2.0):
+- Password field visibility, Save button feedback, Test button fix
+- Color pickers, font options, theme labels, common apps button
+- Activation server /api/check-email endpoint
+- Status messages in UI, app.ico support
 
 Please read summary.md for full context.
 ```

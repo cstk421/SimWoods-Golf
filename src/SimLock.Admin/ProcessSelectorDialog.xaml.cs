@@ -35,7 +35,7 @@ public partial class ProcessSelectorDialog : Window
         }
         catch (Exception ex)
         {
-            MessageBox.Show($"Error loading processes: {ex.Message}", "Error",
+            System.Windows.MessageBox.Show($"Error loading processes: {ex.Message}", "Error",
                 MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
