@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SimLock Administrator Guide</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        .cover {
+            text-align: center;
+            padding: 60px 20px;
+            background: linear-gradient(135deg, #2E7D32 0%, #1A2F1A 100%);
+            color: white;
+            border-radius: 12px;
+            margin-bottom: 40px;
+            page-break-after: always;
+        }
+        .cover h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+        .cover .subtitle {
+            font-size: 24px;
+            opacity: 0.9;
+        }
+        .cover .version {
+            margin-top: 40px;
+            font-size: 18px;
+            opacity: 0.8;
+        }
+        .cover .company {
+            margin-top: 60px;
+            font-size: 16px;
+        }
+        h1 {
+            color: #2E7D32;
+            font-size: 32px;
+            margin: 40px 0 20px 0;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #2E7D32;
+        }
+        h2 {
+            color: #1A2F1A;
+            font-size: 24px;
+            margin: 30px 0 15px 0;
+        }
+        h3 {
+            color: #43A047;
+            font-size: 18px;
+            margin: 20px 0 10px 0;
+        }
+        p {
+            margin-bottom: 15px;
+        }
+        .screenshot {
+            margin: 20px 0;
+            text-align: center;
+        }
+        .screenshot img {
+            max-width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .screenshot-caption {
+            font-style: italic;
+            color: #666;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+        .note {
+            background: #E8F5E9;
+            border-left: 4px solid #2E7D32;
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .warning {
+            background: #FFF3E0;
+            border-left: 4px solid #FF9800;
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .tip {
+            background: #E3F2FD;
+            border-left: 4px solid #2196F3;
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        ul, ol {
+            margin: 15px 0 15px 30px;
+        }
+        li {
+            margin-bottom: 8px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background: #2E7D32;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+        code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Consolas', monospace;
+        }
+        .toc {
+            background: #f9f9f9;
+            padding: 30px;
+            border-radius: 8px;
+            margin-bottom: 40px;
+        }
+        .toc h2 {
+            margin-top: 0;
+        }
+        .toc ul {
+            list-style: none;
+            margin-left: 0;
+        }
+        .toc li {
+            padding: 5px 0;
+        }
+        .toc a {
+            color: #2E7D32;
+            text-decoration: none;
+        }
+        .toc a:hover {
+            text-decoration: underline;
+        }
+        .page-break {
+            page-break-before: always;
+        }
+        @media print {
+            body {
+                padding: 20px;
+            }
+            .cover {
+                page-break-after: always;
+            }
+            h1 {
+                page-break-before: always;
+            }
+            .screenshot img {
+                max-height: 400px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Cover Page -->
+    <div class="cover">
+        <h1>SimLock</h1>
+        <div class="subtitle">Administrator Guide</div>
+        <div class="version">Version 2.0</div>
+        <div class="company">
+            <p>NeutroCorp LLC</p>
+            <p>www.neutrocorp.com</p>
+            <p>support@neutrocorp.com</p>
+        </div>
+    </div>
+
+    <!-- Table of Contents -->
+    <div class="toc">
+        <h2>Table of Contents</h2>
+        <ul>
+            <li><a href="#overview">1. Overview</a></li>
+            <li><a href="#installation">2. Installation</a></li>
+            <li><a href="#getting-started">3. Getting Started</a></li>
+            <li><a href="#admin-panel">4. Admin Panel Configuration</a></li>
+            <li><a href="#lock-screen">5. Lock Screen Features</a></li>
+            <li><a href="#licensing">6. Licensing &amp; Activation</a></li>
+            <li><a href="#troubleshooting">7. Troubleshooting</a></li>
+            <li><a href="#support">8. Support</a></li>
+        </ul>
+    </div>
+
+    <!-- Chapter 1: Overview -->
+    <h1 id="overview">1. Overview</h1>
+
+    <p>SimLock is a professional kiosk lock screen application designed specifically for golf simulators. It provides a secure, customizable splash screen that activates when your golf simulation software starts, ensuring users complete required actions before accessing the simulator.</p>
+
+    <h2>Key Features</h2>
+    <ul>
+        <li><strong>Automatic Activation</strong> - Launches automatically when your golf software starts</li>
+        <li><strong>PIN Protection</strong> - Secure 4-digit unlock code for returning golfers</li>
+        <li><strong>Tutorial Videos</strong> - Built-in video player for first-time user instructions</li>
+        <li><strong>Custom Branding</strong> - Fully customizable colors, logos, and text</li>
+        <li><strong>Custom Actions</strong> - Configure buttons to open websites, PDFs, pictures, or launch programs</li>
+        <li><strong>Theme System</strong> - Complete control over the visual appearance</li>
+    </ul>
+
+    <h2>Components</h2>
+    <table>
+        <tr>
+            <th>Component</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td>SimLock.Admin.exe</td>
+            <td>Configuration panel for all settings</td>
+        </tr>
+        <tr>
+            <td>SimLock.exe</td>
+            <td>The lock screen application</td>
+        </tr>
+        <tr>
+            <td>SimLock.Monitor.exe</td>
+            <td>Background service that watches for your golf software</td>
+        </tr>
+        <tr>
+            <td>SimLock.Launcher.exe</td>
+            <td>Manual launcher for testing</td>
+        </tr>
+    </table>
+
+    <!-- Chapter 2: Installation -->
+    <h1 id="installation" class="page-break">2. Installation</h1>
+
+    <h2>System Requirements</h2>
+    <ul>
+        <li>Windows 10 or Windows 11</li>
+        <li>.NET 8.0 Runtime (included in installer)</li>
+        <li>1920x1080 or higher display resolution recommended</li>
+        <li>Internet connection for license activation and video downloads</li>
+    </ul>
+
+    <h2>Installation Steps</h2>
+    <ol>
+        <li>Download the SimLock installer (SimLock_Installer.zip)</li>
+        <li>Extract the ZIP file to a folder</li>
+        <li>Run <code>SimLock_Setup.exe</code></li>
+        <li>Follow the installation wizard</li>
+        <li>Choose whether to add desktop shortcuts and auto-start options</li>
+        <li>Complete the installation</li>
+    </ol>
+
+    <div class="note">
+        <strong>Note:</strong> We recommend enabling "Start SimLock Monitor with Windows" during installation so the lock screen automatically activates when your golf software launches.
+    </div>
+
+    <!-- Chapter 3: Getting Started -->
+    <h1 id="getting-started" class="page-break">3. Getting Started</h1>
+
+    <h2>First Launch</h2>
+    <p>After installation, launch <strong>SimLock Admin</strong> from the Start Menu or desktop shortcut.</p>
+
+    <div class="screenshot">
+        <img src="Capture.PNG" alt="Admin Login Screen">
+        <div class="screenshot-caption">Figure 3.1 - Admin Login Screen</div>
+    </div>
+
+    <p>Enter the admin password to access the configuration panel. The default password is <code>admin123</code>.</p>
+
+    <div class="warning">
+        <strong>Important:</strong> Change the default admin password immediately after first login to secure your configuration.
+    </div>
+
+    <h2>Quick Setup Checklist</h2>
+    <ol>
+        <li>Change the admin password (General tab)</li>
+        <li>Set your 4-digit unlock code (General tab)</li>
+        <li>Configure the monitored process (e.g., "GSPro Launcher")</li>
+        <li>Customize your splash screen title and subtitle (Appearance tab)</li>
+        <li>Upload your logo (Appearance tab)</li>
+        <li>Add a tutorial video URL (Video tab)</li>
+        <li>Activate your license (footer)</li>
+        <li>Click <strong>Save</strong> and test with the <strong>Test</strong> button</li>
+    </ol>
+
+    <!-- Chapter 4: Admin Panel -->
+    <h1 id="admin-panel" class="page-break">4. Admin Panel Configuration</h1>
+
+    <h2>4.1 General Tab</h2>
+    <p>The General tab contains security settings and process monitoring configuration.</p>
+
+    <div class="screenshot">
+        <img src="Capture.2.PNG" alt="General Tab">
+        <div class="screenshot-caption">Figure 4.1 - General Tab</div>
+    </div>
+
+    <h3>Security Settings</h3>
+    <table>
+        <tr>
+            <th>Setting</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td>4-Digit Unlock Code</td>
+            <td>The PIN code returning golfers enter to unlock the screen</td>
+        </tr>
+        <tr>
+            <td>Admin Password</td>
+            <td>Password required to access this admin panel</td>
+        </tr>
+    </table>
+
+    <h3>Process Monitor</h3>
+    <p>Enter the name of the process to monitor (without .exe). When this process starts, SimLock will automatically display the lock screen.</p>
+
+    <div class="tip">
+        <strong>Tip:</strong> Use the "GSPRO Launcher" quick select button for common golf simulator software, or click "Select Process" to choose from currently running applications.
+    </div>
+
+    <h2 class="page-break">4.2 Appearance Tab</h2>
+    <p>Customize the visual appearance of your splash screen.</p>
+
+    <div class="screenshot">
+        <img src="Capture3.PNG" alt="Appearance Tab">
+        <div class="screenshot-caption">Figure 4.2 - Appearance Tab</div>
+    </div>
+
+    <h3>Splash Screen Settings</h3>
+    <table>
+        <tr>
+            <th>Setting</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td>Title</td>
+            <td>Main heading displayed on the splash screen</td>
+        </tr>
+        <tr>
+            <td>Subtitle</td>
+            <td>Secondary text below the title</td>
+        </tr>
+        <tr>
+            <td>Use Custom Background</td>
+            <td>Enable to use your own background image</td>
+        </tr>
+        <tr>
+            <td>Background Image</td>
+            <td>Path to your custom background image</td>
+        </tr>
+        <tr>
+            <td>Text Overlay Opacity</td>
+            <td>Transparency of the text box (50-100%)</td>
+        </tr>
+    </table>
+
+    <h3>Branding</h3>
+    <p>Upload your company logo and splash image to personalize the lock screen for your golf facility.</p>
+
+    <h2 class="page-break">4.3 Buttons Tab</h2>
+    <p>Configure which buttons appear on the lock screen and what actions they perform.</p>
+
+    <div class="screenshot">
+        <img src="Capture4.PNG" alt="Buttons Tab">
+        <div class="screenshot-caption">Figure 4.3 - Buttons Tab</div>
+    </div>
+
+    <h3>Standard Buttons</h3>
+    <ul>
+        <li><strong>Returning Golfer</strong> - Shows the PIN entry screen</li>
+        <li><strong>Watch Tutorial</strong> - Plays the tutorial video</li>
+    </ul>
+
+    <h3>Custom Buttons</h3>
+    <p>You can add up to 2 custom buttons with the following action types:</p>
+    <table>
+        <tr>
+            <th>Action Type</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td>Start Program</td>
+            <td>Launch an executable file</td>
+        </tr>
+        <tr>
+            <td>Open Website</td>
+            <td>Open a URL in the default browser</td>
+        </tr>
+        <tr>
+            <td>Play Local Video</td>
+            <td>Play a video file in the built-in player</td>
+        </tr>
+        <tr>
+            <td>Open PDF Document</td>
+            <td>Open a PDF in the default PDF viewer</td>
+        </tr>
+        <tr>
+            <td>Open Picture</td>
+            <td>Open an image in the default image viewer</td>
+        </tr>
+    </table>
+
+    <h2 class="page-break">4.4 Video Tab</h2>
+    <p>Configure the tutorial video for first-time users.</p>
+
+    <div class="screenshot">
+        <img src="Capture5.PNG" alt="Video Tab">
+        <div class="screenshot-caption">Figure 4.4 - Video Tab</div>
+    </div>
+
+    <h3>Video Options</h3>
+    <ul>
+        <li><strong>YouTube Video URL</strong> - Enter a YouTube video URL</li>
+        <li><strong>Local Video Path</strong> - Path to a local MP4 video file</li>
+        <li><strong>Download Video from URL</strong> - Download a YouTube video for offline playback</li>
+    </ul>
+
+    <div class="note">
+        <strong>Note:</strong> Downloading videos requires an internet connection. The download progress will be displayed, and videos are saved in MP4 format for maximum compatibility.
+    </div>
+
+    <h2 class="page-break">4.5 Theme Tab</h2>
+    <p>Customize the color scheme and fonts used throughout the application.</p>
+
+    <div class="screenshot">
+        <img src="Capture6.PNG" alt="Theme Tab">
+        <div class="screenshot-caption">Figure 4.5 - Theme Tab</div>
+    </div>
+
+    <h3>Color Settings</h3>
+    <table>
+        <tr>
+            <th>Color</th>
+            <th>Used For</th>
+        </tr>
+        <tr>
+            <td>Primary</td>
+            <td>Main buttons, headers, and accents</td>
+        </tr>
+        <tr>
+            <td>Secondary</td>
+            <td>Button hover states</td>
+        </tr>
+        <tr>
+            <td>Accent</td>
+            <td>Highlights and links</td>
+        </tr>
+        <tr>
+            <td>Background</td>
+            <td>Main screen background</td>
+        </tr>
+        <tr>
+            <td>Surface</td>
+            <td>Cards and panels</td>
+        </tr>
+        <tr>
+            <td>Text Primary</td>
+            <td>Main text color</td>
+        </tr>
+        <tr>
+            <td>Text Secondary</td>
+            <td>Subtle/secondary text</td>
+        </tr>
+    </table>
+
+    <div class="tip">
+        <strong>Tip:</strong> Click the colored box next to each field to open a color picker dialog, or enter hex color codes directly.
+    </div>
+
+    <h2 class="page-break">4.6 Screen Text Tab</h2>
+    <p>Customize text displayed on the lock screen.</p>
+
+    <div class="screenshot">
+        <img src="Capture7.PNG" alt="Screen Text Tab">
+        <div class="screenshot-caption">Figure 4.6 - Screen Text Tab</div>
+    </div>
+
+    <h3>Settings</h3>
+    <ul>
+        <li><strong>PIN Screen Title</strong> - Text shown above the PIN entry keypad</li>
+        <li><strong>Show Custom Message</strong> - Enable to display a custom message on all screens</li>
+        <li><strong>Custom Message</strong> - Your custom text (appears at bottom of screens)</li>
+    </ul>
+
+    <!-- Chapter 5: Lock Screen -->
+    <h1 id="lock-screen" class="page-break">5. Lock Screen Features</h1>
+
+    <h2>5.1 Splash Screen</h2>
+    <p>The splash screen is the first thing users see when the lock screen activates.</p>
+
+    <div class="screenshot">
+        <img src="Screenshot 2026-01-14 at 12.43.53 AM.png" alt="Splash Screen">
+        <div class="screenshot-caption">Figure 5.1 - Splash Screen</div>
+    </div>
+
+    <p>Users tap anywhere on the screen to continue to the main menu.</p>
+
+    <h2 class="page-break">5.2 Main Menu</h2>
+    <p>The main menu presents options for users to proceed.</p>
+
+    <div class="screenshot">
+        <img src="Screenshot 2026-01-14 at 12.44.00 AM.png" alt="Main Menu">
+        <div class="screenshot-caption">Figure 5.2 - Main Menu</div>
+    </div>
+
+    <h3>Default Options</h3>
+    <ul>
+        <li><strong>Returning Golfer</strong> - For users who know the PIN code</li>
+        <li><strong>First Time? Watch Tutorial</strong> - For new users to watch instructional video</li>
+    </ul>
+
+    <h2 class="page-break">5.3 PIN Entry</h2>
+    <p>Returning golfers enter the 4-digit PIN code to unlock the screen.</p>
+
+    <div class="screenshot">
+        <img src="Screenshot 2026-01-14 at 12.44.07 AM.png" alt="PIN Entry">
+        <div class="screenshot-caption">Figure 5.3 - PIN Entry Screen</div>
+    </div>
+
+    <h3>Controls</h3>
+    <ul>
+        <li><strong>Number Pad</strong> - Tap to enter digits</li>
+        <li><strong>DEL</strong> - Delete the last entered digit</li>
+        <li><strong>C (Clear)</strong> - Clear all entered digits</li>
+        <li><strong>Back to Main Menu</strong> - Return to the main menu</li>
+    </ul>
+
+    <h2 class="page-break">5.4 Video Player</h2>
+    <p>The built-in video player shows tutorial content to first-time users.</p>
+
+    <div class="screenshot">
+        <img src="Screenshot 2026-01-14 at 12.44.39 AM.png" alt="Video Player">
+        <div class="screenshot-caption">Figure 5.4 - Tutorial Video Player</div>
+    </div>
+
+    <h3>Features</h3>
+    <ul>
+        <li>Full-screen video playback</li>
+        <li>Time remaining display</li>
+        <li>Back to Main Menu button (top left)</li>
+        <li>Automatic unlock after video completes</li>
+    </ul>
+
+    <!-- Chapter 6: Licensing -->
+    <h1 id="licensing" class="page-break">6. Licensing &amp; Activation</h1>
+
+    <h2>Activating Your License</h2>
+    <p>SimLock requires activation for full functionality. Your license is tied to your email address and machine.</p>
+
+    <h3>Activation Steps</h3>
+    <ol>
+        <li>Enter your licensed email address in the activation field at the bottom of the Admin Panel</li>
+        <li>Click <strong>Check License</strong></li>
+        <li>If valid, your license will be activated automatically</li>
+        <li>The status will change to "Activated" in green</li>
+    </ol>
+
+    <h2>License Management</h2>
+    <ul>
+        <li>Each license allows a specific number of machine activations</li>
+        <li>You can deactivate a machine to free up an activation slot</li>
+        <li>Machine ID is displayed at the bottom of the Admin Panel</li>
+    </ul>
+
+    <div class="warning">
+        <strong>Important:</strong> Do not share your license credentials. Each license is tied to your account and unauthorized use may result in deactivation.
+    </div>
+
+    <!-- Chapter 7: Troubleshooting -->
+    <h1 id="troubleshooting" class="page-break">7. Troubleshooting</h1>
+
+    <h2>Common Issues</h2>
+
+    <h3>Lock screen doesn't appear when golf software starts</h3>
+    <ul>
+        <li>Verify SimLock Monitor is running (check system tray)</li>
+        <li>Confirm the correct process name is entered in General tab</li>
+        <li>Process name should NOT include ".exe"</li>
+        <li>Try using "Select Process" while your golf software is running</li>
+    </ul>
+
+    <h3>Video won't play</h3>
+    <ul>
+        <li>Ensure the video file exists at the specified path</li>
+        <li>Try downloading the video for local playback</li>
+        <li>Verify the video is in MP4 format</li>
+    </ul>
+
+    <h3>License activation fails</h3>
+    <ul>
+        <li>Check your internet connection</li>
+        <li>Verify the email address is correct</li>
+        <li>Contact support if you've exceeded your activation limit</li>
+    </ul>
+
+    <h3>Colors or theme not applying</h3>
+    <ul>
+        <li>Click <strong>Save</strong> after making changes</li>
+        <li>Use the <strong>Test</strong> button to preview changes</li>
+        <li>Verify hex color codes are valid (e.g., #2E7D32)</li>
+    </ul>
+
+    <!-- Chapter 8: Support -->
+    <h1 id="support" class="page-break">8. Support</h1>
+
+    <h2>Contact Information</h2>
+    <table>
+        <tr>
+            <th>Resource</th>
+            <th>Details</th>
+        </tr>
+        <tr>
+            <td>Website</td>
+            <td><a href="https://www.neutrocorp.com">www.neutrocorp.com</a></td>
+        </tr>
+        <tr>
+            <td>Email Support</td>
+            <td><a href="mailto:support@neutrocorp.com">support@neutrocorp.com</a></td>
+        </tr>
+        <tr>
+            <td>Documentation</td>
+            <td>Included in installation folder</td>
+        </tr>
+    </table>
+
+    <h2>When Contacting Support</h2>
+    <p>Please include the following information:</p>
+    <ul>
+        <li>Your license email</li>
+        <li>Machine ID (shown in Admin Panel footer)</li>
+        <li>SimLock version</li>
+        <li>Windows version</li>
+        <li>Description of the issue</li>
+        <li>Screenshots if applicable</li>
+    </ul>
+
+    <div class="note">
+        <strong>Thank you for choosing SimLock!</strong><br>
+        We're committed to providing the best kiosk lock screen solution for your golf simulation business.
+    </div>
+
+    <hr style="margin-top: 60px;">
+    <p style="text-align: center; color: #666; margin-top: 20px;">
+        &copy; 2024 NeutroCorp LLC. All rights reserved.<br>
+        SimLock is a trademark of NeutroCorp LLC.
+    </p>
+
+</body>
+</html>

@@ -84,7 +84,7 @@ Flask-based Python server for license management:
 - `ShowCustomButton1`, `ShowCustomButton2` - Custom action buttons
 - `CustomButton1Label`, `CustomButton1ActionType`, `CustomButton1Target` - Button 1 config
 - `CustomButton2Label`, `CustomButton2ActionType`, `CustomButton2Target` - Button 2 config
-- Action types: `RunExecutable`, `OpenUrl`, `PlayLocalVideo`
+- Action types: `RunExecutable`, `OpenUrl`, `PlayLocalVideo`, `OpenPdf`, `OpenPicture`
 
 ### Theme
 - `ThemePrimaryColor` - Main buttons & headers
@@ -177,6 +177,25 @@ Fixed WinForms/WPF namespace conflicts introduced by `UseWindowsForms=true` in c
 - **App.xaml.cs** - Fixed `Application` ambiguity with fully qualified `System.Windows.Application`
 - **ProcessSelectorDialog.xaml.cs** - Fixed `MessageBox` ambiguity with fully qualified `System.Windows.MessageBox`
 
+## v2.0.2 - Features & Fixes
+
+### New Features
+- **New Action Types**: Added "Open PDF Document" and "Open Picture" for custom buttons
+- **Updated Labels**: "Run Executable" → "Start Program", "Open URL" → "Open Website"
+- **Header Icon**: Admin panel now displays app icon in header
+- **Video Progress**: Download now shows real-time progress percentage
+
+### Bug Fixes
+- **Video Download Hanging**: Fixed by reading stdout/stderr asynchronously to prevent buffer deadlock
+- **Scrollbar Overlap**: Added padding to all ScrollViewer panels
+- **Activation Server**: Fixed reactivation bug for deactivated licenses
+- **App Icons**: All executables now have proper application icons
+
+### Documentation
+- **Admin Guide**: Created comprehensive HTML guide with screenshots (`snaps/SimLock_Admin_Guide.html`)
+- **Video Script**: Created video production script and storyboard (`snaps/SimLock_Video_Script.md`)
+- **Screenshots**: Added 13 screenshots of all admin and lock screen states
+
 ## License
 Copyright (c) NeutroCorp LLC. All rights reserved.
 
@@ -193,27 +212,35 @@ I'm continuing work on SimLock, a .NET 8 WPF kiosk lock screen for golf simulato
 
 Project location: /home/csolaiman/SimLock
 Activation server: 192.168.88.197 (/home/csolaiman/activation-server/)
-Windows share: //192.168.88.156/Users/cstk421/Downloads/Dev
+Windows share: //192.168.88.156/Users/cstk421/Downloads/Dev (mounted at /mnt/windev on activation server)
 
 Key files:
 - src/SimLock.Admin/AdminWindow.xaml(.cs) - Admin panel
 - src/SimLock.Locker/MainWindow.xaml(.cs) - Lock screen
 - src/SimLock.Common/AppConfig.cs - Configuration
 - activation-server/app.py - License server
+- installer/SimLock_Setup.iss - Inno Setup installer
+- snaps/SimLock_Admin_Guide.html - User documentation
 
 GitHub: https://github.com/cstk421/SimWoods-Golf
+SSH to activation server: ssh -i ~/.ssh/dms-deploy csolaiman@192.168.88.197
 
-Last session completed:
-- Fixed WinForms/WPF namespace conflicts (CS0104 errors)
-- AdminWindow.xaml.cs rewritten with using aliases
-- LoginWindow.xaml.cs, App.xaml.cs, ProcessSelectorDialog.xaml.cs fixed
-- All Color, MessageBox, OpenFileDialog ambiguities resolved
+Last session (v2.0.2) completed:
+- Added new action types: Open PDF Document, Open Picture
+- Updated dropdown labels: "Start Program", "Open Website"
+- Fixed video download hanging (async stdout/stderr reading)
+- Fixed scrollbar overlap in admin panel tabs
+- Fixed activation server reactivation bug
+- Added app icons to all executables
+- Created Admin Guide HTML with screenshots
+- Created video production script/storyboard
 
-Previous session (v2.0):
-- Password field visibility, Save button feedback, Test button fix
-- Color pickers, font options, theme labels, common apps button
-- Activation server /api/check-email endpoint
-- Status messages in UI, app.ico support
+Build commands:
+  dotnet publish -c Release -o publish
+  Then run Inno Setup on installer/SimLock_Setup.iss
 
-Please read summary.md for full context.
+To deploy files to Windows share:
+  scp -i ~/.ssh/dms-deploy <file> csolaiman@192.168.88.197:/mnt/windev/<path>
+
+Please read summary.md for full project context.
 ```
