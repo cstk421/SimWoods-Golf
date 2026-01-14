@@ -2,15 +2,17 @@ using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using SimLock.Common;
 using WinForms = System.Windows.Forms;
 using WpfColor = System.Windows.Media.Color;
+using WpfComboBox = System.Windows.Controls.ComboBox;
+using WpfComboBoxItem = System.Windows.Controls.ComboBoxItem;
 using WpfMessageBox = System.Windows.MessageBox;
 using WpfOpenFileDialog = Microsoft.Win32.OpenFileDialog;
+using WpfTextBox = System.Windows.Controls.TextBox;
 
 namespace SimLock.Admin;
 
@@ -87,9 +89,9 @@ public partial class AdminWindow : Window
         UpdateColorPreviews();
     }
 
-    private void SetComboBoxByTag(ComboBox comboBox, string tag)
+    private void SetComboBoxByTag(WpfComboBox comboBox, string tag)
     {
-        foreach (ComboBoxItem item in comboBox.Items)
+        foreach (WpfComboBoxItem item in comboBox.Items)
         {
             if (item.Tag?.ToString() == tag)
             {
@@ -100,9 +102,9 @@ public partial class AdminWindow : Window
         comboBox.SelectedIndex = 0;
     }
 
-    private void SetComboBoxByContent(ComboBox comboBox, string content)
+    private void SetComboBoxByContent(WpfComboBox comboBox, string content)
     {
-        foreach (ComboBoxItem item in comboBox.Items)
+        foreach (WpfComboBoxItem item in comboBox.Items)
         {
             if (item.Content?.ToString() == content)
             {
@@ -113,14 +115,14 @@ public partial class AdminWindow : Window
         comboBox.SelectedIndex = 0;
     }
 
-    private string GetComboBoxTag(ComboBox comboBox)
+    private string GetComboBoxTag(WpfComboBox comboBox)
     {
-        return (comboBox.SelectedItem as ComboBoxItem)?.Tag?.ToString() ?? "RunExecutable";
+        return (comboBox.SelectedItem as WpfComboBoxItem)?.Tag?.ToString() ?? "RunExecutable";
     }
 
-    private string GetComboBoxContent(ComboBox comboBox)
+    private string GetComboBoxContent(WpfComboBox comboBox)
     {
-        return (comboBox.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? "Segoe UI";
+        return (comboBox.SelectedItem as WpfComboBoxItem)?.Content?.ToString() ?? "Segoe UI";
     }
 
     private void LoadLogoPreview()
@@ -370,7 +372,7 @@ public partial class AdminWindow : Window
         BrowseCustomButtonTarget(CustomButton2ActionCombo, CustomButton2TargetInput);
     }
 
-    private void BrowseCustomButtonTarget(ComboBox actionCombo, TextBox targetInput)
+    private void BrowseCustomButtonTarget(WpfComboBox actionCombo, WpfTextBox targetInput)
     {
         var actionType = GetComboBoxTag(actionCombo);
 
