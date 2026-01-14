@@ -11,8 +11,10 @@
             <Color x:Key="SurfaceColor">#2D4A2D</Color>
             <Color x:Key="TextPrimaryColor">#FFFFFF</Color>
             <Color x:Key="TextSecondaryColor">#C8D6C8</Color>
+            <Color x:Key="AccentColor">#FFD700</Color>
 
             <SolidColorBrush x:Key="PrimaryBrush" Color="{StaticResource PrimaryColor}"/>
+            <SolidColorBrush x:Key="AccentBrush" Color="{StaticResource AccentColor}"/>
             <SolidColorBrush x:Key="PrimaryLightBrush" Color="{StaticResource PrimaryLightColor}"/>
             <SolidColorBrush x:Key="BackgroundBrush" Color="{StaticResource BackgroundColor}"/>
             <SolidColorBrush x:Key="SurfaceBrush" Color="{StaticResource SurfaceColor}"/>
