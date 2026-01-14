@@ -78,7 +78,6 @@ public partial class AdminWindow : Window
 
         // Activation
         ActivationEmailInput.Text = _config.ActivationEmail;
-        LicenseKeyInput.Text = _config.LicenseKey;
 
         LoadLogoPreview();
         UpdateColorPreviews();
@@ -152,7 +151,7 @@ public partial class AdminWindow : Window
         UpdateColorPreview(ThemeTextSecondaryColorInput.Text, ThemeTextSecondaryColorPreview);
     }
 
-    private void UpdateColorPreview(string hexColor, System.Windows.Controls.Border preview)
+    private void UpdateColorPreview(string hexColor, Border preview)
     {
         try
         {
@@ -180,79 +179,86 @@ public partial class AdminWindow : Window
         if (_config.IsActivated)
         {
             ActivationStatusText.Text = "Activated";
-            ActivationStatusText.Foreground = new SolidColorBrush(Colors.LimeGreen);
-            ActivationEmailDisplay.Text = $"Email: {_config.ActivationEmail}";
-            ActivationDateDisplay.Text = _config.ActivationDate.HasValue
-                ? $"Activated: {_config.ActivationDate.Value:yyyy-MM-dd HH:mm}"
-                : "";
+            ActivationStatusText.Foreground = new SolidColorBrush(Color.FromRgb(76, 175, 80)); // Green
+            ActivationEmailDisplay.Text = _config.ActivationEmail;
+            LicenseBalanceText.Text = "";
             ActivationInputPanel.Visibility = Visibility.Collapsed;
-            DeactivationPanel.Visibility = Visibility.Visible;
+            ActivatedPanel.Visibility = Visibility.Visible;
         }
         else
         {
             ActivationStatusText.Text = "Not Activated";
-            ActivationStatusText.Foreground = new SolidColorBrush(Color.FromRgb(255, 82, 82));
-            ActivationEmailDisplay.Text = "";
-            ActivationDateDisplay.Text = "";
+            ActivationStatusText.Foreground = new SolidColorBrush(Color.FromRgb(244, 67, 54)); // Red
+            LicenseBalanceText.Text = "";
             ActivationInputPanel.Visibility = Visibility.Visible;
-            DeactivationPanel.Visibility = Visibility.Collapsed;
+            ActivatedPanel.Visibility = Visibility.Collapsed;
         }
     }
 
-    private async void Activate_Click(object sender, RoutedEventArgs e)
+    private async void CheckLicense_Click(object sender, RoutedEventArgs e)
     {
         var email = ActivationEmailInput.Text.Trim();
-        var licenseKey = LicenseKeyInput.Text.Trim();
 
-        if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(licenseKey))
+        if (string.IsNullOrEmpty(email) || !email.Contains("@"))
         {
-            MessageBox.Show("Please enter both email and license key.", "Validation Error",
+            MessageBox.Show("Please enter a valid email address.", "Validation Error",
                 MessageBoxButton.OK, MessageBoxImage.Warning);
             return;
         }
 
         ActivateButton.IsEnabled = false;
-        ActivateButton.Content = "Activating...";
+        ActivateButton.Content = "Checking...";
 
         try
         {
-            var result = await _activationService!.ActivateAsync(email, licenseKey);
+            var result = await _activationService!.CheckAndActivateAsync(email);
 
             if (result.Success)
             {
                 _config.IsActivated = true;
                 _config.ActivationEmail = email;
-                _config.LicenseKey = licenseKey;
+                _config.LicenseKey = result.LicenseKey ?? "";
                 _config.MachineId = result.MachineId ?? MachineIdentifier.GetMachineId();
                 _config.ActivationDate = DateTime.Now;
                 _config.Save();
 
                 UpdateActivationUI();
-                MessageBox.Show("License activated successfully!", "Success",
+
+                var balanceMsg = result.RemainingActivations.HasValue
+                    ? $"\n\nRemaining activations: {result.RemainingActivations}"
+                    : "";
+
+                MessageBox.Show($"License activated successfully!{balanceMsg}", "Success",
                     MessageBoxButton.OK, MessageBoxImage.Information);
             }
             else
             {
-                MessageBox.Show($"Activation failed: {result.Message}", "Activation Failed",
-                    MessageBoxButton.OK, MessageBoxImage.Error);
+                // Show balance if available
+                if (result.RemainingActivations.HasValue)
+                {
+                    LicenseBalanceText.Text = $"(Available: {result.RemainingActivations})";
+                }
+
+                MessageBox.Show($"{result.Message}", "Activation",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
         catch (Exception ex)
         {
-            MessageBox.Show($"Activation error: {ex.Message}", "Error",
-                MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show($"Connection error: {ex.Message}\n\nPlease check your internet connection and try again.",
+                "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
         finally
         {
             ActivateButton.IsEnabled = true;
-            ActivateButton.Content = "Activate License";
+            ActivateButton.Content = "Check License";
         }
     }
 
     private async void Deactivate_Click(object sender, RoutedEventArgs e)
     {
         var result = MessageBox.Show(
-            "Are you sure you want to deactivate this machine?\n\nYou can reactivate on this or another machine later.",
+            "Are you sure you want to deactivate this machine?\n\nThis will free up one activation for use on another machine.",
             "Confirm Deactivation",
             MessageBoxButton.YesNo,
             MessageBoxImage.Question);
@@ -271,6 +277,7 @@ public partial class AdminWindow : Window
             {
                 _config.IsActivated = false;
                 _config.ActivationDate = null;
+                _config.LicenseKey = "";
                 _config.Save();
 
                 UpdateActivationUI();
@@ -297,6 +304,19 @@ public partial class AdminWindow : Window
             Process.Start(new ProcessStartInfo
             {
                 FileName = "mailto:support@neutrocorp.com",
+                UseShellExecute = true
+            });
+        }
+        catch { }
+    }
+
+    private void Website_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
+    {
+        try
+        {
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = "https://www.neutrocorp.com",
                 UseShellExecute = true
             });
         }
@@ -365,7 +385,6 @@ public partial class AdminWindow : Window
                 break;
 
             case "OpenUrl":
-                // No browse for URLs
                 MessageBox.Show("Please enter the URL directly in the text field.",
                     "URL Input", MessageBoxButton.OK, MessageBoxImage.Information);
                 break;
@@ -475,7 +494,7 @@ public partial class AdminWindow : Window
         _config.ThemeFontFamily = GetComboBoxContent(ThemeFontFamilyCombo);
 
         _config.Save();
-        SaveStatusText.Text = "Settings saved successfully!";
+        MessageBox.Show("Settings saved successfully!", "Saved", MessageBoxButton.OK, MessageBoxImage.Information);
     }
 
     private void BrowseVideo_Click(object sender, RoutedEventArgs e)
@@ -603,7 +622,7 @@ public partial class AdminWindow : Window
             var ffmpegPath = Path.Combine(AppConfig.GetDataDirectory(), "ffmpeg.exe");
             if (!File.Exists(ffmpegPath))
             {
-                DownloadStatusText.Text = "Downloading ffmpeg (for video processing)...";
+                DownloadStatusText.Text = "Downloading ffmpeg...";
                 await DownloadFfmpegAsync(ffmpegPath);
             }
 
@@ -623,8 +642,6 @@ public partial class AdminWindow : Window
             else
             {
                 DownloadStatusText.Text = "Download failed.";
-                MessageBox.Show("Video download failed. Check the URL and try again.", "Error",
-                    MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
         catch (Exception ex)
@@ -705,31 +722,11 @@ public partial class AdminWindow : Window
                 using var process = Process.Start(psi);
                 if (process == null) return false;
 
-                var output = process.StandardOutput.ReadToEnd();
-                var error = process.StandardError.ReadToEnd();
-
                 process.WaitForExit();
-
-                if (process.ExitCode != 0)
-                {
-                    Debug.WriteLine($"yt-dlp error: {error}");
-                    Dispatcher.Invoke(() =>
-                    {
-                        MessageBox.Show($"Download error:\n{error}", "yt-dlp Error",
-                            MessageBoxButton.OK, MessageBoxImage.Error);
-                    });
-                    return false;
-                }
-
                 return File.Exists(outputPath);
             }
-            catch (Exception ex)
+            catch
             {
-                Dispatcher.Invoke(() =>
-                {
-                    MessageBox.Show($"Download exception: {ex.Message}", "Error",
-                        MessageBoxButton.OK, MessageBoxImage.Error);
-                });
                 return false;
             }
         });

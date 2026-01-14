@@ -29,6 +29,62 @@ public class ActivationService : IDisposable
     }
 
     /// <summary>
+    /// Checks email for available licenses and auto-activates if available.
+    /// </summary>
+    public async Task<ActivationResult> CheckAndActivateAsync(string email)
+    {
+        try
+        {
+            var machineId = MachineIdentifier.GetMachineId();
+
+            var request = new EmailCheckRequest
+            {
+                Email = email,
+                MachineId = machineId
+            };
+
+            var response = await _httpClient.PostAsJsonAsync(
+                $"{_serverUrl}/api/check-email", request);
+
+            var result = await response.Content.ReadFromJsonAsync<EmailCheckResponse>();
+
+            return new ActivationResult
+            {
+                Success = response.IsSuccessStatusCode && (result?.Success ?? false),
+                Message = result?.Message ?? "Unknown error",
+                MachineId = machineId,
+                LicenseKey = result?.LicenseKey,
+                RemainingActivations = result?.RemainingActivations,
+                ActivationDate = result?.ActivationDate
+            };
+        }
+        catch (HttpRequestException ex)
+        {
+            return new ActivationResult
+            {
+                Success = false,
+                Message = $"Network error: Unable to reach activation server. {ex.Message}"
+            };
+        }
+        catch (TaskCanceledException)
+        {
+            return new ActivationResult
+            {
+                Success = false,
+                Message = "Connection timeout: Activation server did not respond."
+            };
+        }
+        catch (Exception ex)
+        {
+            return new ActivationResult
+            {
+                Success = false,
+                Message = $"Error: {ex.Message}"
+            };
+        }
+    }
+
+    /// <summary>
     /// Activates a license on this machine.
     /// </summary>
     public async Task<ActivationResult> ActivateAsync(string email, string licenseKey)
@@ -188,6 +244,41 @@ public class ActivationResult
     public bool IsActivated { get; set; }
     public string Message { get; set; } = "";
     public string? MachineId { get; set; }
+    public string? LicenseKey { get; set; }
+    public string? ActivationDate { get; set; }
+    public int? RemainingActivations { get; set; }
+}
+
+/// <summary>
+/// Request model for email check API calls.
+/// </summary>
+internal class EmailCheckRequest
+{
+    [JsonPropertyName("email")]
+    public string Email { get; set; } = "";
+
+    [JsonPropertyName("machine_id")]
+    public string MachineId { get; set; } = "";
+}
+
+/// <summary>
+/// Response model from email check API.
+/// </summary>
+internal class EmailCheckResponse
+{
+    [JsonPropertyName("success")]
+    public bool Success { get; set; }
+
+    [JsonPropertyName("message")]
+    public string? Message { get; set; }
+
+    [JsonPropertyName("license_key")]
+    public string? LicenseKey { get; set; }
+
+    [JsonPropertyName("remaining_activations")]
+    public int? RemainingActivations { get; set; }
+
+    [JsonPropertyName("activation_date")]
     public string? ActivationDate { get; set; }
 }
 
