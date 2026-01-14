@@ -425,6 +425,25 @@ public partial class MainWindow : Window
                     ShowVideoPlayer(target);
                     break;
 
+                case "OpenPdf":
+                case "OpenPicture":
+                    if (!File.Exists(target))
+                    {
+                        MessageBox.Show(
+                            $"File not found: {target}",
+                            "File Not Found",
+                            MessageBoxButton.OK,
+                            MessageBoxImage.Warning);
+                        return;
+                    }
+                    Process.Start(new ProcessStartInfo
+                    {
+                        FileName = target,
+                        UseShellExecute = true
+                    });
+                    UnlockAndClose();
+                    break;
+
                 default:
                     MessageBox.Show(
                         $"Unknown action type: {actionType}",

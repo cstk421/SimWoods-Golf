@@ -31,6 +31,36 @@ public partial class AdminWindow : Window
         _activationService = new ActivationService(_config.ActivationServerUrl);
         LoadSettings();
         UpdateActivationUI();
+        LoadHeaderIcon();
+    }
+
+    private void LoadHeaderIcon()
+    {
+        try
+        {
+            // Try to load icon from Assets folder
+            var iconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "app.ico");
+            if (!File.Exists(iconPath))
+            {
+                // Try relative to solution for development
+                var solutionDir = FindSolutionDirectory();
+                if (solutionDir != null)
+                {
+                    iconPath = Path.Combine(solutionDir, "Assets", "app.ico");
+                }
+            }
+
+            if (File.Exists(iconPath))
+            {
+                var bitmap = new BitmapImage();
+                bitmap.BeginInit();
+                bitmap.CacheOption = BitmapCacheOption.OnLoad;
+                bitmap.UriSource = new Uri(iconPath, UriKind.Absolute);
+                bitmap.EndInit();
+                HeaderLogo.Source = bitmap;
+            }
+        }
+        catch { }
     }
 
     private void LoadSettings()
@@ -408,6 +438,30 @@ public partial class AdminWindow : Window
                 WpfMessageBox.Show("Please enter the URL directly in the text field.",
                     "URL Input", MessageBoxButton.OK, MessageBoxImage.Information);
                 break;
+
+            case "OpenPdf":
+                var pdfDialog = new WpfOpenFileDialog
+                {
+                    Filter = "PDF Documents|*.pdf|All Files|*.*",
+                    Title = "Select PDF Document"
+                };
+                if (pdfDialog.ShowDialog() == true)
+                {
+                    targetInput.Text = pdfDialog.FileName;
+                }
+                break;
+
+            case "OpenPicture":
+                var pictureDialog = new WpfOpenFileDialog
+                {
+                    Filter = "Image Files|*.png;*.jpg;*.jpeg;*.bmp;*.gif;*.webp|All Files|*.*",
+                    Title = "Select Picture"
+                };
+                if (pictureDialog.ShowDialog() == true)
+                {
+                    targetInput.Text = pictureDialog.FileName;
+                }
+                break;
         }
     }
 
@@ -733,37 +787,83 @@ public partial class AdminWindow : Window
 
     private async Task<bool> DownloadVideoAsync(string ytdlpPath, string url, string outputPath)
     {
-        return await Task.Run(() =>
+        try
         {
-            try
+            if (File.Exists(outputPath))
+                File.Delete(outputPath);
+
+            var ffmpegDir = AppConfig.GetDataDirectory();
+            var formatArgs = "-f \"bestvideo[ext=mp4][vcodec^=avc1]+bestaudio[ext=m4a]/bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best\" --merge-output-format mp4";
+
+            var psi = new ProcessStartInfo
             {
-                if (File.Exists(outputPath))
-                    File.Delete(outputPath);
+                FileName = ytdlpPath,
+                Arguments = $"--no-playlist --ffmpeg-location \"{ffmpegDir}\" {formatArgs} -o \"{outputPath}\" \"{url}\"",
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
 
-                var ffmpegDir = AppConfig.GetDataDirectory();
-                var formatArgs = "-f \"bestvideo[ext=mp4][vcodec^=avc1]+bestaudio[ext=m4a]/bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best\" --merge-output-format mp4";
+            using var process = Process.Start(psi);
+            if (process == null) return false;
 
-                var psi = new ProcessStartInfo
+            // Read output asynchronously to prevent buffer deadlock
+            process.OutputDataReceived += (s, e) =>
+            {
+                if (!string.IsNullOrEmpty(e.Data))
                 {
-                    FileName = ytdlpPath,
-                    Arguments = $"--no-playlist --ffmpeg-location \"{ffmpegDir}\" {formatArgs} -o \"{outputPath}\" \"{url}\"",
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true,
-                    UseShellExecute = false,
-                    CreateNoWindow = true
-                };
+                    Dispatcher.BeginInvoke(() =>
+                    {
+                        // Extract progress percentage if present
+                        if (e.Data.Contains("%"))
+                        {
+                            var match = System.Text.RegularExpressions.Regex.Match(e.Data, @"(\d+\.?\d*)%");
+                            if (match.Success)
+                            {
+                                DownloadStatusText.Text = $"Downloading: {match.Value}";
+                            }
+                        }
+                        else if (e.Data.Contains("[download]"))
+                        {
+                            DownloadStatusText.Text = "Downloading video...";
+                        }
+                        else if (e.Data.Contains("[Merger]") || e.Data.Contains("Merging"))
+                        {
+                            DownloadStatusText.Text = "Merging video and audio...";
+                        }
+                    });
+                }
+            };
 
-                using var process = Process.Start(psi);
-                if (process == null) return false;
-
-                process.WaitForExit();
-                return File.Exists(outputPath);
-            }
-            catch
+            process.ErrorDataReceived += (s, e) =>
             {
-                return false;
-            }
-        });
+                if (!string.IsNullOrEmpty(e.Data))
+                {
+                    Dispatcher.BeginInvoke(() =>
+                    {
+                        if (e.Data.Contains("%"))
+                        {
+                            var match = System.Text.RegularExpressions.Regex.Match(e.Data, @"(\d+\.?\d*)%");
+                            if (match.Success)
+                            {
+                                DownloadStatusText.Text = $"Downloading: {match.Value}";
+                            }
+                        }
+                    });
+                }
+            };
+
+            process.BeginOutputReadLine();
+            process.BeginErrorReadLine();
+
+            await Task.Run(() => process.WaitForExit());
+            return File.Exists(outputPath);
+        }
+        catch
+        {
+            return false;
+        }
     }
 
     private void TestLockScreen_Click(object sender, RoutedEventArgs e)

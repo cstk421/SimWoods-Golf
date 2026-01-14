@@ -276,9 +276,11 @@
                                         <StackPanel Grid.Column="1" Margin="8,0,0,0">
                                             <Label Content="Action Type"/>
                                             <ComboBox x:Name="CustomButton1ActionCombo" SelectedIndex="0">
-                                                <ComboBoxItem Content="Run Executable" Tag="RunExecutable"/>
-                                                <ComboBoxItem Content="Open URL" Tag="OpenUrl"/>
+                                                <ComboBoxItem Content="Start Program" Tag="RunExecutable"/>
+                                                <ComboBoxItem Content="Open Website" Tag="OpenUrl"/>
                                                 <ComboBoxItem Content="Play Local Video" Tag="PlayLocalVideo"/>
+                                                <ComboBoxItem Content="Open PDF Document" Tag="OpenPdf"/>
+                                                <ComboBoxItem Content="Open Picture" Tag="OpenPicture"/>
                                             </ComboBox>
                                         </StackPanel>
                                     </Grid>
@@ -317,9 +319,11 @@
                                         <StackPanel Grid.Column="1" Margin="8,0,0,0">
                                             <Label Content="Action Type"/>
                                             <ComboBox x:Name="CustomButton2ActionCombo" SelectedIndex="0">
-                                                <ComboBoxItem Content="Run Executable" Tag="RunExecutable"/>
-                                                <ComboBoxItem Content="Open URL" Tag="OpenUrl"/>
+                                                <ComboBoxItem Content="Start Program" Tag="RunExecutable"/>
+                                                <ComboBoxItem Content="Open Website" Tag="OpenUrl"/>
                                                 <ComboBoxItem Content="Play Local Video" Tag="PlayLocalVideo"/>
+                                                <ComboBoxItem Content="Open PDF Document" Tag="OpenPdf"/>
+                                                <ComboBoxItem Content="Open Picture" Tag="OpenPicture"/>
                                             </ComboBox>
                                         </StackPanel>
                                     </Grid>
