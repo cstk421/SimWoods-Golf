@@ -95,7 +95,7 @@ public partial class MainWindow : Window
                 var bgPath = _config.SplashBackgroundImagePath;
                 if (!Path.IsPathRooted(bgPath))
                 {
-                    bgPath = Path.Combine(AppConfig.ConfigDirectory, bgPath);
+                    bgPath = Path.Combine(AppConfig.GetDataDirectory(), bgPath);
                 }
 
                 if (File.Exists(bgPath))
