@@ -34,7 +34,8 @@
                                Margin="0,2,0,0"/>
                 </StackPanel>
                 <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
-                    <Button Content="Save"
+                    <Button x:Name="SaveButton"
+                            Content="Save"
                             Style="{StaticResource PrimaryButtonStyle}"
                             Background="#43A047"
                             Click="SaveSettings_Click"
@@ -126,7 +127,21 @@
                             </Grid>
                             <TextBlock Text="SimLock will launch when this process starts."
                                        Foreground="{StaticResource TextSecondaryBrush}"
-                                       FontSize="12"/>
+                                       FontSize="12"
+                                       Margin="0,0,0,16"/>
+
+                            <TextBlock Text="Quick Select Common Apps"
+                                       FontSize="14"
+                                       FontWeight="Medium"
+                                       Foreground="{StaticResource TextPrimaryBrush}"
+                                       Margin="0,0,0,8"/>
+                            <WrapPanel>
+                                <Button Content="GSPRO Launcher"
+                                        Style="{StaticResource SecondaryButtonStyle}"
+                                        Click="CommonApp_Click"
+                                        Tag="GSPro Launcher"
+                                        Margin="0,0,8,8"/>
+                            </WrapPanel>
                         </StackPanel>
                     </ScrollViewer>
                 </Border>
@@ -395,86 +410,86 @@
                                 </Grid.RowDefinitions>
 
                                 <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,10,12">
-                                    <Label Content="Primary Color"/>
+                                    <Label Content="Primary (Main Buttons &amp; Headers)"/>
                                     <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*"/>
                                             <ColumnDefinition Width="36"/>
                                         </Grid.ColumnDefinitions>
                                         <TextBox x:Name="ThemePrimaryColorInput" Text="#2E7D32"/>
-                                        <Border x:Name="ThemePrimaryColorPreview" Grid.Column="1" Width="30" Height="30" CornerRadius="4" Margin="6,0,0,0" Background="#2E7D32"/>
+                                        <Border x:Name="ThemePrimaryColorPreview" Grid.Column="1" Width="30" Height="30" CornerRadius="4" Margin="6,0,0,0" Background="#2E7D32" Cursor="Hand" MouseLeftButtonUp="PickColor_Click" Tag="ThemePrimaryColorInput"/>
                                     </Grid>
                                 </StackPanel>
 
                                 <StackPanel Grid.Row="0" Grid.Column="1" Margin="10,0,0,12">
-                                    <Label Content="Secondary Color"/>
+                                    <Label Content="Secondary (Button Hover)"/>
                                     <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*"/>
                                             <ColumnDefinition Width="36"/>
                                         </Grid.ColumnDefinitions>
                                         <TextBox x:Name="ThemeSecondaryColorInput" Text="#60AD5E"/>
-                                        <Border x:Name="ThemeSecondaryColorPreview" Grid.Column="1" Width="30" Height="30" CornerRadius="4" Margin="6,0,0,0" Background="#60AD5E"/>
+                                        <Border x:Name="ThemeSecondaryColorPreview" Grid.Column="1" Width="30" Height="30" CornerRadius="4" Margin="6,0,0,0" Background="#60AD5E" Cursor="Hand" MouseLeftButtonUp="PickColor_Click" Tag="ThemeSecondaryColorInput"/>
                                     </Grid>
                                 </StackPanel>
 
                                 <StackPanel Grid.Row="1" Grid.Column="0" Margin="0,0,10,12">
-                                    <Label Content="Accent Color"/>
+                                    <Label Content="Accent (Highlights &amp; Links)"/>
                                     <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*"/>
                                             <ColumnDefinition Width="36"/>
                                         </Grid.ColumnDefinitions>
                                         <TextBox x:Name="ThemeAccentColorInput" Text="#FFD700"/>
-                                        <Border x:Name="ThemeAccentColorPreview" Grid.Column="1" Width="30" Height="30" CornerRadius="4" Margin="6,0,0,0" Background="#FFD700"/>
+                                        <Border x:Name="ThemeAccentColorPreview" Grid.Column="1" Width="30" Height="30" CornerRadius="4" Margin="6,0,0,0" Background="#FFD700" Cursor="Hand" MouseLeftButtonUp="PickColor_Click" Tag="ThemeAccentColorInput"/>
                                     </Grid>
                                 </StackPanel>
 
                                 <StackPanel Grid.Row="1" Grid.Column="1" Margin="10,0,0,12">
-                                    <Label Content="Background Color"/>
+                                    <Label Content="Background (Main Screen)"/>
                                     <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*"/>
                                             <ColumnDefinition Width="36"/>
                                         </Grid.ColumnDefinitions>
                                         <TextBox x:Name="ThemeBackgroundColorInput" Text="#1A2F1A"/>
-                                        <Border x:Name="ThemeBackgroundColorPreview" Grid.Column="1" Width="30" Height="30" CornerRadius="4" Margin="6,0,0,0" Background="#1A2F1A"/>
+                                        <Border x:Name="ThemeBackgroundColorPreview" Grid.Column="1" Width="30" Height="30" CornerRadius="4" Margin="6,0,0,0" Background="#1A2F1A" Cursor="Hand" MouseLeftButtonUp="PickColor_Click" Tag="ThemeBackgroundColorInput"/>
                                     </Grid>
                                 </StackPanel>
 
                                 <StackPanel Grid.Row="2" Grid.Column="0" Margin="0,0,10,12">
-                                    <Label Content="Surface Color"/>
+                                    <Label Content="Surface (Cards &amp; Panels)"/>
                                     <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*"/>
                                             <ColumnDefinition Width="36"/>
                                         </Grid.ColumnDefinitions>
                                         <TextBox x:Name="ThemeSurfaceColorInput" Text="#2D4A2D"/>
-                                        <Border x:Name="ThemeSurfaceColorPreview" Grid.Column="1" Width="30" Height="30" CornerRadius="4" Margin="6,0,0,0" Background="#2D4A2D"/>
+                                        <Border x:Name="ThemeSurfaceColorPreview" Grid.Column="1" Width="30" Height="30" CornerRadius="4" Margin="6,0,0,0" Background="#2D4A2D" Cursor="Hand" MouseLeftButtonUp="PickColor_Click" Tag="ThemeSurfaceColorInput"/>
                                     </Grid>
                                 </StackPanel>
 
                                 <StackPanel Grid.Row="2" Grid.Column="1" Margin="10,0,0,12">
-                                    <Label Content="Text Primary"/>
+                                    <Label Content="Text Primary (Main Text)"/>
                                     <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*"/>
                                             <ColumnDefinition Width="36"/>
                                         </Grid.ColumnDefinitions>
                                         <TextBox x:Name="ThemeTextPrimaryColorInput" Text="#FFFFFF"/>
-                                        <Border x:Name="ThemeTextPrimaryColorPreview" Grid.Column="1" Width="30" Height="30" CornerRadius="4" Margin="6,0,0,0" Background="#FFFFFF" BorderBrush="#E0E0E0" BorderThickness="1"/>
+                                        <Border x:Name="ThemeTextPrimaryColorPreview" Grid.Column="1" Width="30" Height="30" CornerRadius="4" Margin="6,0,0,0" Background="#FFFFFF" BorderBrush="#E0E0E0" BorderThickness="1" Cursor="Hand" MouseLeftButtonUp="PickColor_Click" Tag="ThemeTextPrimaryColorInput"/>
                                     </Grid>
                                 </StackPanel>
 
                                 <StackPanel Grid.Row="3" Grid.Column="0" Margin="0,0,10,12">
-                                    <Label Content="Text Secondary"/>
+                                    <Label Content="Text Secondary (Subtle Text)"/>
                                     <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*"/>
                                             <ColumnDefinition Width="36"/>
                                         </Grid.ColumnDefinitions>
                                         <TextBox x:Name="ThemeTextSecondaryColorInput" Text="#C8D6C8"/>
-                                        <Border x:Name="ThemeTextSecondaryColorPreview" Grid.Column="1" Width="30" Height="30" CornerRadius="4" Margin="6,0,0,0" Background="#C8D6C8"/>
+                                        <Border x:Name="ThemeTextSecondaryColorPreview" Grid.Column="1" Width="30" Height="30" CornerRadius="4" Margin="6,0,0,0" Background="#C8D6C8" Cursor="Hand" MouseLeftButtonUp="PickColor_Click" Tag="ThemeTextSecondaryColorInput"/>
                                     </Grid>
                                 </StackPanel>
 
@@ -485,6 +500,14 @@
                                         <ComboBoxItem Content="Arial"/>
                                         <ComboBoxItem Content="Verdana"/>
                                         <ComboBoxItem Content="Calibri"/>
+                                        <ComboBoxItem Content="Tahoma"/>
+                                        <ComboBoxItem Content="Trebuchet MS"/>
+                                        <ComboBoxItem Content="Georgia"/>
+                                        <ComboBoxItem Content="Times New Roman"/>
+                                        <ComboBoxItem Content="Consolas"/>
+                                        <ComboBoxItem Content="Roboto"/>
+                                        <ComboBoxItem Content="Open Sans"/>
+                                        <ComboBoxItem Content="Montserrat"/>
                                     </ComboBox>
                                 </StackPanel>
                             </Grid>

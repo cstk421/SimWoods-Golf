@@ -44,7 +44,7 @@ UninstallFilesDir={app}\uninstall
 ; Output settings
 OutputDir=..\installer_output
 OutputBaseFilename=SimLock_Setup
-; SetupIconFile=..\Assets\app.ico  ; Uncomment when app.ico is available
+SetupIconFile=..\Assets\app.ico
 Compression=lzma2
 SolidCompression=yes
 
@@ -83,8 +83,9 @@ Source: "..\publish\*.deps.json"; DestDir: "{app}"; Flags: ignoreversion
 
 ; Config and Assets from project root
 Source: "..\config.json"; DestDir: "{app}"; Flags: ignoreversion onlyifdoesntexist
-Source: "..\Assets\PLACEHOLDER.txt"; DestDir: "{app}\Assets"; Flags: ignoreversion
-Source: "..\Videos\PLACEHOLDER.txt"; DestDir: "{app}\Videos"; Flags: ignoreversion
+Source: "..\Assets\app.ico"; DestDir: "{app}\Assets"; Flags: ignoreversion
+Source: "..\Assets\PLACEHOLDER.txt"; DestDir: "{app}\Assets"; Flags: ignoreversion skipifsourcedoesntexist
+Source: "..\Videos\PLACEHOLDER.txt"; DestDir: "{app}\Videos"; Flags: ignoreversion skipifsourcedoesntexist
 
 [Dirs]
 Name: "{app}\Assets"; Permissions: users-modify
@@ -92,16 +93,16 @@ Name: "{app}\Videos"; Permissions: users-modify
 
 [Icons]
 ; Start Menu shortcuts
-Name: "{group}\SimLock Admin"; Filename: "{app}\SimLock.Admin.exe"; Comment: "Configure SimLock settings"
-Name: "{group}\SimLock Monitor"; Filename: "{app}\SimLock.Monitor.exe"; Comment: "Start SimLock process monitor"
-Name: "{group}\Launch SimLock"; Filename: "{app}\SimLock.Launcher.exe"; Comment: "Launch SimLock lock screen"
+Name: "{group}\SimLock Admin"; Filename: "{app}\SimLock.Admin.exe"; IconFilename: "{app}\Assets\app.ico"; Comment: "Configure SimLock settings"
+Name: "{group}\SimLock Monitor"; Filename: "{app}\SimLock.Monitor.exe"; IconFilename: "{app}\Assets\app.ico"; Comment: "Start SimLock process monitor"
+Name: "{group}\Launch SimLock"; Filename: "{app}\SimLock.Launcher.exe"; IconFilename: "{app}\Assets\app.ico"; Comment: "Launch SimLock lock screen"
 Name: "{group}\{cm:UninstallProgram,{#MyAppName}}"; Filename: "{uninstallexe}"
 
 ; Desktop shortcut (optional)
-Name: "{autodesktop}\SimLock Admin"; Filename: "{app}\SimLock.Admin.exe"; Tasks: desktopicon
+Name: "{autodesktop}\SimLock Admin"; Filename: "{app}\SimLock.Admin.exe"; IconFilename: "{app}\Assets\app.ico"; Tasks: desktopicon
 
 ; Startup shortcut (common startup for all users since running as admin)
-Name: "{commonstartup}\SimLock Monitor"; Filename: "{app}\SimLock.Monitor.exe"; Tasks: startupicon
+Name: "{commonstartup}\SimLock Monitor"; Filename: "{app}\SimLock.Monitor.exe"; IconFilename: "{app}\Assets\app.ico"; Tasks: startupicon
 
 [Run]
 ; Run after install

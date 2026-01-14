@@ -5,8 +5,10 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 using Microsoft.Win32;
 using SimLock.Common;
+using WinForms = System.Windows.Forms;
 
 namespace SimLock.Admin;
 
@@ -201,13 +203,15 @@ public partial class AdminWindow : Window
 
         if (string.IsNullOrEmpty(email) || !email.Contains("@"))
         {
-            MessageBox.Show("Please enter a valid email address.", "Validation Error",
-                MessageBoxButton.OK, MessageBoxImage.Warning);
+            ActivationStatusText.Text = "Please enter a valid email";
+            ActivationStatusText.Foreground = new SolidColorBrush(Color.FromRgb(244, 67, 54));
             return;
         }
 
         ActivateButton.IsEnabled = false;
         ActivateButton.Content = "Checking...";
+        ActivationStatusText.Text = "Checking license...";
+        ActivationStatusText.Foreground = new SolidColorBrush(Color.FromRgb(33, 150, 243)); // Blue
 
         try
         {
@@ -224,12 +228,10 @@ public partial class AdminWindow : Window
 
                 UpdateActivationUI();
 
-                var balanceMsg = result.RemainingActivations.HasValue
-                    ? $"\n\nRemaining activations: {result.RemainingActivations}"
-                    : "";
-
-                MessageBox.Show($"License activated successfully!{balanceMsg}", "Success",
-                    MessageBoxButton.OK, MessageBoxImage.Information);
+                if (result.RemainingActivations.HasValue)
+                {
+                    LicenseBalanceText.Text = $"(Remaining: {result.RemainingActivations})";
+                }
             }
             else
             {
@@ -239,14 +241,14 @@ public partial class AdminWindow : Window
                     LicenseBalanceText.Text = $"(Available: {result.RemainingActivations})";
                 }
 
-                MessageBox.Show($"{result.Message}", "Activation",
-                    MessageBoxButton.OK, MessageBoxImage.Warning);
+                ActivationStatusText.Text = result.Message;
+                ActivationStatusText.Foreground = new SolidColorBrush(Color.FromRgb(244, 67, 54)); // Red
             }
         }
         catch (Exception ex)
         {
-            MessageBox.Show($"Connection error: {ex.Message}\n\nPlease check your internet connection and try again.",
-                "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            ActivationStatusText.Text = $"Error: {ex.Message}";
+            ActivationStatusText.Foreground = new SolidColorBrush(Color.FromRgb(244, 67, 54)); // Red
         }
         finally
         {
@@ -266,6 +268,9 @@ public partial class AdminWindow : Window
         if (result != MessageBoxResult.Yes)
             return;
 
+        ActivationStatusText.Text = "Deactivating...";
+        ActivationStatusText.Foreground = new SolidColorBrush(Color.FromRgb(33, 150, 243)); // Blue
+
         try
         {
             var deactivateResult = await _activationService!.DeactivateAsync(
@@ -281,19 +286,28 @@ public partial class AdminWindow : Window
                 _config.Save();
 
                 UpdateActivationUI();
-                MessageBox.Show("Machine deactivated successfully.", "Success",
-                    MessageBoxButton.OK, MessageBoxImage.Information);
+                ActivationStatusText.Text = "Deactivated successfully";
+                ActivationStatusText.Foreground = new SolidColorBrush(Color.FromRgb(76, 175, 80)); // Green
+
+                // Reset to "Not Activated" after a moment
+                var timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(2) };
+                timer.Tick += (s, args) =>
+                {
+                    timer.Stop();
+                    UpdateActivationUI();
+                };
+                timer.Start();
             }
             else
             {
-                MessageBox.Show($"Deactivation failed: {deactivateResult.Message}", "Error",
-                    MessageBoxButton.OK, MessageBoxImage.Error);
+                ActivationStatusText.Text = $"Failed: {deactivateResult.Message}";
+                ActivationStatusText.Foreground = new SolidColorBrush(Color.FromRgb(244, 67, 54)); // Red
             }
         }
         catch (Exception ex)
         {
-            MessageBox.Show($"Deactivation error: {ex.Message}", "Error",
-                MessageBoxButton.OK, MessageBoxImage.Error);
+            ActivationStatusText.Text = $"Error: {ex.Message}";
+            ActivationStatusText.Foreground = new SolidColorBrush(Color.FromRgb(244, 67, 54)); // Red
         }
     }
 
@@ -494,7 +508,21 @@ public partial class AdminWindow : Window
         _config.ThemeFontFamily = GetComboBoxContent(ThemeFontFamilyCombo);
 
         _config.Save();
-        MessageBox.Show("Settings saved successfully!", "Saved", MessageBoxButton.OK, MessageBoxImage.Information);
+
+        // Show "Saved" on button momentarily
+        var originalContent = SaveButton.Content;
+        var originalBackground = SaveButton.Background;
+        SaveButton.Content = "Saved!";
+        SaveButton.Background = new SolidColorBrush(Color.FromRgb(76, 175, 80)); // Bright green
+
+        var timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1.5) };
+        timer.Tick += (s, args) =>
+        {
+            timer.Stop();
+            SaveButton.Content = originalContent;
+            SaveButton.Background = originalBackground;
+        };
+        timer.Start();
     }
 
     private void BrowseVideo_Click(object sender, RoutedEventArgs e)
@@ -734,8 +762,6 @@ public partial class AdminWindow : Window
 
     private void TestLockScreen_Click(object sender, RoutedEventArgs e)
     {
-        SaveSettings_Click(sender, e);
-
         var exePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "SimLock.exe");
 
         if (!File.Exists(exePath))
@@ -788,6 +814,48 @@ public partial class AdminWindow : Window
         if (processDialog.ShowDialog() == true && !string.IsNullOrEmpty(processDialog.SelectedProcessName))
         {
             MonitoredProcessInput.Text = processDialog.SelectedProcessName;
+        }
+    }
+
+    private void CommonApp_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is System.Windows.Controls.Button button && button.Tag is string processName)
+        {
+            MonitoredProcessInput.Text = processName;
+        }
+    }
+
+    private void PickColor_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
+    {
+        if (sender is Border border && border.Tag is string targetInputName)
+        {
+            // Find the target TextBox by name
+            var targetInput = this.FindName(targetInputName) as TextBox;
+            if (targetInput == null) return;
+
+            // Parse current color
+            Color currentColor = Colors.Gray;
+            try
+            {
+                currentColor = ThemeManager.ParseColor(targetInput.Text);
+            }
+            catch { }
+
+            // Show Windows Forms color dialog
+            using var colorDialog = new WinForms.ColorDialog
+            {
+                Color = System.Drawing.Color.FromArgb(currentColor.A, currentColor.R, currentColor.G, currentColor.B),
+                FullOpen = true,
+                AnyColor = true
+            };
+
+            if (colorDialog.ShowDialog() == WinForms.DialogResult.OK)
+            {
+                var selectedColor = colorDialog.Color;
+                var hexColor = $"#{selectedColor.R:X2}{selectedColor.G:X2}{selectedColor.B:X2}";
+                targetInput.Text = hexColor;
+                border.Background = new SolidColorBrush(Color.FromRgb(selectedColor.R, selectedColor.G, selectedColor.B));
+            }
         }
     }
 }
