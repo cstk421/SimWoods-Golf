@@ -77,14 +77,14 @@ Source: "..\publish\SimLock.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\publish\SimLock.Admin.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\publish\SimLock.Monitor.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\publish\SimLock.Launcher.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\publish\config.json"; DestDir: "{app}"; Flags: ignoreversion onlyifdoesntexist
 Source: "..\publish\*.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\publish\*.runtimeconfig.json"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\publish\*.deps.json"; DestDir: "{app}"; Flags: ignoreversion
 
-; Create Assets and Videos folders (empty, will be populated via Admin)
-Source: "..\publish\Assets\PLACEHOLDER.txt"; DestDir: "{app}\Assets"; Flags: ignoreversion
-Source: "..\publish\Videos\PLACEHOLDER.txt"; DestDir: "{app}\Videos"; Flags: ignoreversion
+; Config and Assets from project root
+Source: "..\config.json"; DestDir: "{app}"; Flags: ignoreversion onlyifdoesntexist
+Source: "..\Assets\PLACEHOLDER.txt"; DestDir: "{app}\Assets"; Flags: ignoreversion
+Source: "..\Videos\PLACEHOLDER.txt"; DestDir: "{app}\Videos"; Flags: ignoreversion
 
 [Dirs]
 Name: "{app}\Assets"; Permissions: users-modify
