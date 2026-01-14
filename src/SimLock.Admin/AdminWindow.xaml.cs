@@ -14,6 +14,7 @@ using WpfComboBoxItem = System.Windows.Controls.ComboBoxItem;
 using WpfMessageBox = System.Windows.MessageBox;
 using WpfOpenFileDialog = Microsoft.Win32.OpenFileDialog;
 using WpfTextBox = System.Windows.Controls.TextBox;
+using WpfButton = System.Windows.Controls.Button;
 
 namespace SimLock.Admin;
 
@@ -824,7 +825,7 @@ public partial class AdminWindow : Window
 
     private void CommonApp_Click(object sender, RoutedEventArgs e)
     {
-        if (sender is Button button && button.Tag is string processName)
+        if (sender is WpfButton button && button.Tag is string processName)
         {
             MonitoredProcessInput.Text = processName;
         }
@@ -835,7 +836,7 @@ public partial class AdminWindow : Window
         if (sender is Border border && border.Tag is string targetInputName)
         {
             // Find the target TextBox by name
-            var targetInput = this.FindName(targetInputName) as TextBox;
+            var targetInput = this.FindName(targetInputName) as WpfTextBox;
             if (targetInput == null) return;
 
             // Parse current color
