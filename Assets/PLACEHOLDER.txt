@@ -1,0 +1,11 @@
+PLACEHOLDER ASSETS
+==================
+
+Please add the following files to this directory:
+
+1. logo.png - Your SimWoods Golf logo (recommended: 400x150 pixels, PNG with transparency)
+2. splash.png - Optional splash background image
+
+You can update these paths in the Admin panel or directly in config.json.
+
+The app will work without these files, but images won't display until you add them.

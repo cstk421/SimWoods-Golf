@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWindowsForms>true</UseWindowsForms>
+    <AssemblyName>SimLock.Monitor</AssemblyName>
+    <ApplicationIcon Condition="Exists('..\..\Assets\app.ico')">..\..\Assets\app.ico</ApplicationIcon>
+    <Version>1.0.0</Version>
+    <Company>SimWoods Golf</Company>
+    <Product>SimLock Monitor</Product>
+    <Copyright>Copyright (c) 2024 SimWoods Golf</Copyright>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SimLock.Common\SimLock.Common.csproj" />
+  </ItemGroup>
+
+</Project>

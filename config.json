@@ -1,0 +1,11 @@
+{
+  "unlockCode": "1234",
+  "videoUrl": "https://youtu.be/hI-G8T8PoOA",
+  "localVideoPath": "Videos/tutorial.mp4",
+  "logoPath": "Assets/logo.png",
+  "splashImagePath": "Assets/splash.png",
+  "splashTitle": "Welcome to SimWoods Golf",
+  "splashSubtitle": "Your Premium Golf Simulation Experience",
+  "monitoredProcessName": "gspro",
+  "adminPassword": "admin123"
+}

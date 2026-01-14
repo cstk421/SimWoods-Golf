@@ -1,0 +1,8 @@
+VIDEO PLACEHOLDER
+=================
+
+Tutorial video will be downloaded here.
+
+Use the Admin panel to download the video from YouTube, or place your video file here manually.
+
+Expected filename: tutorial.mp4
