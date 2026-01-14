@@ -82,8 +82,8 @@
             <!-- General Tab -->
             <TabItem Header="General">
                 <Border Style="{StaticResource CardStyle}" Margin="0,8,0,0">
-                    <ScrollViewer VerticalScrollBarVisibility="Auto">
-                        <StackPanel>
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="0,0,8,0">
+                        <StackPanel Margin="0,0,8,0">
                             <!-- Security Section -->
                             <TextBlock Text="Security"
                                        FontSize="16"
@@ -150,8 +150,8 @@
             <!-- Appearance Tab -->
             <TabItem Header="Appearance">
                 <Border Style="{StaticResource CardStyle}" Margin="0,8,0,0">
-                    <ScrollViewer VerticalScrollBarVisibility="Auto">
-                        <StackPanel>
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="0,0,8,0">
+                        <StackPanel Margin="0,0,8,0">
                             <!-- Splash Screen -->
                             <TextBlock Text="Splash Screen"
                                        FontSize="16"
@@ -239,8 +239,8 @@
             <!-- Buttons Tab -->
             <TabItem Header="Buttons">
                 <Border Style="{StaticResource CardStyle}" Margin="0,8,0,0">
-                    <ScrollViewer VerticalScrollBarVisibility="Auto">
-                        <StackPanel>
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="0,0,8,0">
+                        <StackPanel Margin="0,0,8,0">
                             <TextBlock Text="Standard Buttons"
                                        FontSize="16"
                                        FontWeight="SemiBold"
@@ -345,8 +345,8 @@
             <!-- Video Tab -->
             <TabItem Header="Video">
                 <Border Style="{StaticResource CardStyle}" Margin="0,8,0,0">
-                    <ScrollViewer VerticalScrollBarVisibility="Auto">
-                        <StackPanel>
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="0,0,8,0">
+                        <StackPanel Margin="0,0,8,0">
                             <TextBlock Text="Tutorial Video"
                                        FontSize="16"
                                        FontWeight="SemiBold"
@@ -389,8 +389,8 @@
             <!-- Theme Tab -->
             <TabItem Header="Theme">
                 <Border Style="{StaticResource CardStyle}" Margin="0,8,0,0">
-                    <ScrollViewer VerticalScrollBarVisibility="Auto">
-                        <StackPanel>
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="0,0,8,0">
+                        <StackPanel Margin="0,0,8,0">
                             <TextBlock Text="Color Scheme"
                                        FontSize="16"
                                        FontWeight="SemiBold"
@@ -529,8 +529,8 @@
             <!-- Screen Text Tab -->
             <TabItem Header="Screen Text">
                 <Border Style="{StaticResource CardStyle}" Margin="0,8,0,0">
-                    <ScrollViewer VerticalScrollBarVisibility="Auto">
-                        <StackPanel>
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="0,0,8,0">
+                        <StackPanel Margin="0,0,8,0">
                             <TextBlock Text="Screen Customization"
                                        FontSize="16"
                                        FontWeight="SemiBold"
