@@ -1,114 +1,182 @@
 # SimLock - Golf Simulator Kiosk Lock Screen
 
 ## Overview
-SimLock is a .NET 8 WPF kiosk lock screen application designed for golf simulators. It provides a secure splash/lock screen that activates when a monitored application (like GSPRO Launcher) starts, requiring user interaction before allowing access.
+
+SimLock is a professional .NET 8 WPF kiosk lock screen application designed for golf simulators. It provides a secure, customizable splash/lock screen that automatically activates when a monitored application (like GSPRO Launcher) starts, requiring user interaction before allowing access to the simulator.
+
+**Key Use Case:** Golf simulation facilities use SimLock to display branding, tutorials, and information to customers before they begin their session, while also providing PIN-based access control for returning golfers.
+
+---
+
+## Project Structure
+
+```
+SimLock/
+├── src/
+│   ├── SimLock.Admin/          # Admin configuration panel
+│   ├── SimLock.Locker/         # Main lock screen application
+│   ├── SimLock.Monitor/        # Background process monitor
+│   ├── SimLock.Launcher/       # Manual launcher for testing
+│   └── SimLock.Common/         # Shared library
+├── activation-server/          # Python Flask license server
+├── installer/                  # Inno Setup installer files
+├── Assets/                     # Icons and images
+├── snaps/                      # Screenshots and documentation
+└── config.json                 # Runtime configuration
+```
+
+---
 
 ## Components
 
 ### 1. SimLock.Locker (`SimLock.exe`)
-The main lock screen application that displays:
-- Splash screen with customizable title, subtitle, and background
-- PIN entry screen for returning golfers
-- Tutorial video playback
-- Custom action buttons
-- Theme-aware UI with configurable colors and fonts
+The main lock screen application featuring:
+- **Splash Screen** - Customizable welcome screen with title, subtitle, logo, and background image
+- **Main Menu** - Configurable buttons for user navigation
+- **PIN Entry** - 4-digit keypad for returning golfers
+- **Video Player** - Built-in player for tutorial videos with countdown timer
+- **Theme Support** - Full color and font customization
+- **Custom Actions** - Buttons that can open programs, websites, PDFs, pictures, or videos
 
 ### 2. SimLock.Admin (`SimLock.Admin.exe`)
-Admin panel for configuring all settings:
-- **General Tab**: Unlock code, admin password, monitored process
-- **Appearance Tab**: Splash screen images, backgrounds, logos
-- **Buttons Tab**: Configure custom action buttons
-- **Video Tab**: Tutorial video URL/path, download functionality
-- **Theme Tab**: Color pickers for 7 theme colors, font selection
-- **Screen Text Tab**: Custom messages, PIN screen title
-- **Footer**: License activation with email-based licensing
+Configuration panel with 6 tabs:
+
+| Tab | Features |
+|-----|----------|
+| **General** | Unlock code, admin password, monitored process, GSPRO quick-select |
+| **Appearance** | Splash title/subtitle, logo, background image, opacity settings |
+| **Buttons** | Standard buttons toggle, 2 custom buttons with 5 action types |
+| **Video** | YouTube URL input, local video path, download with progress |
+| **Theme** | 7 color pickers, font selector (12 fonts available) |
+| **Screen Text** | PIN screen title, custom footer message |
+
+**Footer:** License activation with email-based licensing system
 
 ### 3. SimLock.Monitor (`SimLock.Monitor.exe`)
-Background service that watches for the configured process and launches the lock screen when detected.
+Background Windows service that:
+- Watches for the configured process to start
+- Automatically launches the lock screen when detected
+- Runs minimized in system tray
+- Can be set to start with Windows
 
 ### 4. SimLock.Launcher (`SimLock.Launcher.exe`)
-Entry point that launches the lock screen directly for testing.
+Simple launcher for testing the lock screen without process monitoring.
 
-### 5. SimLock.Common
-Shared library containing:
+### 5. SimLock.Common (Shared Library)
+Contains:
 - `AppConfig.cs` - Configuration management with JSON persistence
 - `ThemeManager.cs` - Dynamic theme/color handling
 - `MachineIdentifier.cs` - Hardware fingerprinting for licensing
-- `ActivationService.cs` - Client for activation server API
+- `ActivationService.cs` - HTTP client for activation server API
 
-### 6. Activation Server (`activation-server/`)
+### 6. Activation Server
 Flask-based Python server for license management:
-- **Location**: `192.168.88.197:8443`
-- **Admin UI**: `https://activation.neutrocorp.com:8443/`
-- **Credentials**: `admin` / `SimLock2024!`
-- **Database**: SQLite (`activations.db`)
-- **API Endpoints**:
-  - `POST /api/check-email` - Check email for licenses and auto-activate
-  - `POST /api/activate` - Activate license on machine
-  - `POST /api/deactivate` - Deactivate license from machine
-  - `POST /api/check` - Check activation status
 
-## Key Files
+| Property | Value |
+|----------|-------|
+| **Server** | 192.168.88.197:8443 |
+| **Admin UI** | https://activation.neutrocorp.com:8443/ |
+| **Credentials** | admin / SimLock2024! |
+| **Database** | SQLite (activations.db) |
+
+**API Endpoints:**
+- `POST /api/check-email` - Check email for licenses and auto-activate
+- `POST /api/activate` - Activate license on machine
+- `POST /api/deactivate` - Deactivate license from machine
+- `POST /api/check` - Check activation status
+
+---
+
+## Key Files Reference
 
 | File | Purpose |
 |------|---------|
-| `src/SimLock.Admin/AdminWindow.xaml` | Admin panel UI layout |
-| `src/SimLock.Admin/AdminWindow.xaml.cs` | Admin panel logic |
+| `src/SimLock.Admin/AdminWindow.xaml` | Admin panel UI (XAML layout) |
+| `src/SimLock.Admin/AdminWindow.xaml.cs` | Admin panel logic (800+ lines) |
 | `src/SimLock.Admin/LoginWindow.xaml` | Admin login screen |
+| `src/SimLock.Admin/ProcessSelectorDialog.xaml` | Running process picker |
 | `src/SimLock.Locker/MainWindow.xaml` | Lock screen UI |
-| `src/SimLock.Common/AppConfig.cs` | All configuration properties |
-| `src/SimLock.Common/ActivationService.cs` | Activation API client |
-| `activation-server/app.py` | License server Flask app |
+| `src/SimLock.Locker/MainWindow.xaml.cs` | Lock screen logic |
+| `src/SimLock.Common/AppConfig.cs` | All 30+ configuration properties |
+| `src/SimLock.Common/ActivationService.cs` | License server API client |
+| `activation-server/app.py` | Flask license server |
 | `installer/SimLock_Setup.iss` | Inno Setup installer script |
-| `config.json` | Runtime configuration |
+| `snaps/SimLock_Admin_Guide.html` | User documentation with screenshots |
+| `snaps/SimLock_Video_Script.md` | Video production storyboard |
 
-## Configuration Options (AppConfig.cs)
+---
+
+## Configuration Options
 
 ### Security
-- `UnlockCode` - 4-digit PIN code
-- `AdminPassword` - Admin panel password
+| Property | Description | Default |
+|----------|-------------|---------|
+| `UnlockCode` | 4-digit PIN code | 1234 |
+| `AdminPassword` | Admin panel password | admin123 |
 
 ### Video
-- `VideoUrl` - YouTube URL for tutorial
-- `LocalVideoPath` - Path to local video file
+| Property | Description |
+|----------|-------------|
+| `VideoUrl` | YouTube URL for tutorial |
+| `LocalVideoPath` | Path to downloaded/local MP4 file |
 
 ### Splash Screen
-- `SplashTitle`, `SplashSubtitle` - Text on splash screen
-- `SplashImagePath` - Logo image on splash
-- `SplashBackgroundImagePath` - Custom background image
-- `UseSplashBackgroundImage` - Enable custom background
-- `SplashTextBoxOpacity` - Opacity of text overlay (0.5-1.0)
+| Property | Description |
+|----------|-------------|
+| `SplashTitle` | Main heading text |
+| `SplashSubtitle` | Secondary text |
+| `SplashImagePath` | Logo image path |
+| `SplashBackgroundImagePath` | Custom background image |
+| `UseSplashBackgroundImage` | Enable custom background |
+| `SplashTextBoxOpacity` | Text overlay opacity (0.5-1.0) |
 
 ### Buttons
-- `ShowReturningGolferButton`, `ShowTutorialButton` - Standard buttons
-- `ShowCustomButton1`, `ShowCustomButton2` - Custom action buttons
-- `CustomButton1Label`, `CustomButton1ActionType`, `CustomButton1Target` - Button 1 config
-- `CustomButton2Label`, `CustomButton2ActionType`, `CustomButton2Target` - Button 2 config
-- Action types: `RunExecutable`, `OpenUrl`, `PlayLocalVideo`, `OpenPdf`, `OpenPicture`
+| Property | Description |
+|----------|-------------|
+| `ShowReturningGolferButton` | Show PIN entry button |
+| `ShowTutorialButton` | Show tutorial video button |
+| `ShowCustomButton1/2` | Enable custom buttons |
+| `CustomButton1Label` | Button text |
+| `CustomButton1ActionType` | Action type (see below) |
+| `CustomButton1Target` | File path or URL |
 
-### Theme
-- `ThemePrimaryColor` - Main buttons & headers
-- `ThemeSecondaryColor` - Button hover states
-- `ThemeAccentColor` - Highlights & links
-- `ThemeBackgroundColor` - Main screen background
-- `ThemeSurfaceColor` - Cards & panels
-- `ThemeTextPrimaryColor` - Main text
-- `ThemeTextSecondaryColor` - Subtle text
-- `ThemeFontFamily` - Application font
+**Action Types:**
+- `RunExecutable` - Start a program (displayed as "Start Program")
+- `OpenUrl` - Open website (displayed as "Open Website")
+- `PlayLocalVideo` - Play video in built-in player
+- `OpenPdf` - Open PDF document
+- `OpenPicture` - Open image file
+
+### Theme Colors
+| Property | Used For |
+|----------|----------|
+| `ThemePrimaryColor` | Main buttons & headers |
+| `ThemeSecondaryColor` | Button hover states |
+| `ThemeAccentColor` | Highlights & links |
+| `ThemeBackgroundColor` | Main screen background |
+| `ThemeSurfaceColor` | Cards & panels |
+| `ThemeTextPrimaryColor` | Main text |
+| `ThemeTextSecondaryColor` | Subtle text |
+| `ThemeFontFamily` | Application font |
 
 ### Activation
-- `IsActivated` - Current activation status
-- `ActivationEmail` - Licensed email
-- `LicenseKey` - License key from server
-- `MachineId` - Hardware fingerprint
-- `ActivationServerUrl` - Server URL (default: `https://activation.neutrocorp.com:8443`)
+| Property | Description |
+|----------|-------------|
+| `IsActivated` | Current activation status |
+| `ActivationEmail` | Licensed email address |
+| `LicenseKey` | License key from server |
+| `MachineId` | Hardware fingerprint |
+| `ActivationServerUrl` | Server URL |
 
-## Building
+---
+
+## Building & Deployment
 
 ### Requirements
 - .NET 8 SDK
-- Windows (WPF application)
+- Windows 10/11 (WPF application)
 - Visual Studio 2022 or VS Code
+- Inno Setup (for installer)
 
 ### Build Commands
 ```bash
@@ -118,94 +186,154 @@ dotnet build
 # Publish for release
 dotnet publish -c Release -o ./publish
 
-# Run tests
-dotnet test
+# Create installer (run on Windows)
+# Open installer/SimLock_Setup.iss in Inno Setup Compiler
 ```
 
-### Installer
-1. Place `app.ico` in `Assets/` folder
-2. Build and publish the projects
-3. Run Inno Setup Compiler on `installer/SimLock_Setup.iss`
-4. Output: `installer_output/SimLock_Setup.exe`
+### Deployment Workflow
 
-## Deployment
+1. **Build on Linux:**
+   ```bash
+   cd /home/csolaiman/SimLock
+   dotnet publish -c Release -o ./publish
+   ```
 
-### Windows Share
+2. **Deploy to Windows Share:**
+   ```bash
+   scp -i ~/.ssh/dms-deploy <files> csolaiman@192.168.88.197:/mnt/windev/
+   ```
+
+3. **Build Installer on Windows:**
+   - Open `installer/SimLock_Setup.iss` in Inno Setup
+   - Compile to create `installer_output/SimLock_Setup.exe`
+
+4. **Create Distribution ZIP:**
+   ```powershell
+   Compress-Archive -Path installer_output\SimLock_Setup.exe -DestinationPath SimLock_Installer.zip
+   ```
+
+### Activation Server Management
 ```bash
-# Mount Windows share
-sudo mount -t cifs //192.168.88.156/Users/cstk421/Downloads/Dev /mnt/windev -o guest
+# SSH to server
+ssh -i ~/.ssh/dms-deploy csolaiman@192.168.88.197
 
-# Copy build files
-cp -r publish/* /mnt/windev/SimLock/
-cp installer/SimLock_Setup.iss /mnt/windev/InnoFiles/
-```
-
-### Activation Server
-```bash
-# On 192.168.88.197
+# Start/restart server
 cd /home/csolaiman/activation-server
 source venv/bin/activate
-python app.py
+pkill -f 'python app.py'
+nohup python app.py > /tmp/activation.log 2>&1 &
 
-# Or use systemd service
+# Or use systemd
 sudo systemctl restart simlock-activation
 ```
 
-## Recent Updates (v2.0)
+---
 
-1. **Password field visibility** - Fixed PasswordBox to show dots when typing
-2. **Save button feedback** - Shows "Saved!" momentarily instead of popup
-3. **Test button** - No longer auto-saves before testing
-4. **Color pickers** - Full color dialog for theme customization
-5. **Font options** - 12 fonts available (Segoe UI, Arial, Verdana, etc.)
-6. **Theme labels** - Clear descriptions of what each color affects
-7. **Common apps button** - Quick select for GSPRO Launcher
-8. **Activation API fix** - Added missing `/api/check-email` endpoint
-9. **Status messages** - Activation status shows in UI instead of popups
-10. **App icon support** - Installer uses custom icon
+## Technical Notes
 
-## v2.0.1 - Namespace Conflict Fixes
+### WinForms/WPF Namespace Resolution
+The project uses `UseWindowsForms=true` for the color picker dialog, which creates namespace conflicts. Resolved using type aliases in AdminWindow.xaml.cs:
 
-Fixed WinForms/WPF namespace conflicts introduced by `UseWindowsForms=true` in csproj:
+```csharp
+using WinForms = System.Windows.Forms;
+using WpfColor = System.Windows.Media.Color;
+using WpfComboBox = System.Windows.Controls.ComboBox;
+using WpfMessageBox = System.Windows.MessageBox;
+using WpfOpenFileDialog = Microsoft.Win32.OpenFileDialog;
+using WpfTextBox = System.Windows.Controls.TextBox;
+using WpfButton = System.Windows.Controls.Button;
+```
 
-- **AdminWindow.xaml.cs** - Rewrote with using aliases to resolve ambiguous types:
-  - `WpfColor = System.Windows.Media.Color`
-  - `WpfMessageBox = System.Windows.MessageBox`
-  - `WpfOpenFileDialog = Microsoft.Win32.OpenFileDialog`
-  - `WinForms = System.Windows.Forms` (for color picker dialog)
-- **LoginWindow.xaml.cs** - Fixed `KeyEventArgs` ambiguity with fully qualified `System.Windows.Input.KeyEventArgs`
-- **App.xaml.cs** - Fixed `Application` ambiguity with fully qualified `System.Windows.Application`
-- **ProcessSelectorDialog.xaml.cs** - Fixed `MessageBox` ambiguity with fully qualified `System.Windows.MessageBox`
+### Video Download
+Uses yt-dlp and ffmpeg for downloading YouTube videos:
+- Downloads yt-dlp.exe automatically if not present
+- Downloads ffmpeg.exe automatically if not present
+- Shows real-time progress using async stdout/stderr reading
+- Outputs MP4 format for maximum compatibility
 
-## v2.0.2 - Features & Fixes
+### App Icons
+Valid .ico file required (not PNG renamed to .ico). Located at `Assets/app.ico` and `installer/app.ico`. Referenced in all .csproj files via `<ApplicationIcon>` element.
 
-### New Features
-- **New Action Types**: Added "Open PDF Document" and "Open Picture" for custom buttons
-- **Updated Labels**: "Run Executable" → "Start Program", "Open URL" → "Open Website"
-- **Header Icon**: Admin panel now displays app icon in header
-- **Video Progress**: Download now shows real-time progress percentage
+---
 
-### Bug Fixes
-- **Video Download Hanging**: Fixed by reading stdout/stderr asynchronously to prevent buffer deadlock
-- **Scrollbar Overlap**: Added padding to all ScrollViewer panels
-- **Activation Server**: Fixed reactivation bug for deactivated licenses
-- **App Icons**: All executables now have proper application icons
+## Documentation
 
-### Documentation
-- **Admin Guide**: Created comprehensive HTML guide with screenshots (`snaps/SimLock_Admin_Guide.html`)
-- **Video Script**: Created video production script and storyboard (`snaps/SimLock_Video_Script.md`)
-- **Screenshots**: Added 13 screenshots of all admin and lock screen states
+### User Guide
+`snaps/SimLock_Admin_Guide.html` - Comprehensive 8-chapter HTML guide with screenshots:
+1. Overview
+2. Installation
+3. Getting Started
+4. Admin Panel Configuration
+5. Lock Screen Features
+6. Licensing & Activation
+7. Troubleshooting
+8. Support
 
-## License
-Copyright (c) NeutroCorp LLC. All rights reserved.
+### Screenshots (in `snaps/` folder)
+**Admin Panel:**
+- `Capture.PNG` - Login screen
+- `Capture.2.PNG` - General tab
+- `Capture3.PNG` - Appearance tab
+- `Capture4.PNG` - Buttons tab
+- `Capture5.PNG` - Video tab
+- `Capture6.PNG` - Theme tab
+- `Capture7.PNG` - Screen Text tab
 
-## Support
-- Website: https://www.neutrocorp.com
-- Email: support@neutrocorp.com
+**Lock Screen:**
+- `splashscreen.png` - Welcome splash screen
+- `mainmenu.png` - Main menu with buttons
+- `pinentry.png` - PIN entry keypad
+- `videoplayer.png` - Tutorial video player
+
+### Video Production
+`snaps/SimLock_Video_Script.md` - Complete storyboard and narration script for creating a tutorial video.
+
+---
+
+## Version History
+
+### v2.0.2 (Current)
+- Added "Open PDF Document" and "Open Picture" action types
+- Updated dropdown labels: "Start Program", "Open Website"
+- Fixed video download hanging (async stdout/stderr)
+- Fixed scrollbar overlap in admin panel
+- Fixed activation server reactivation bug
+- Added app icons to all executables
+- Created Admin Guide and Video Script documentation
+
+### v2.0.1
+- Fixed WinForms/WPF namespace conflicts (CS0104 errors)
+- Rewrote AdminWindow.xaml.cs with using aliases
+- Fixed ambiguous type references across all files
+
+### v2.0
+- Password field visibility fix
+- Save button "Saved!" feedback
+- Test button no longer auto-saves
+- Full color picker dialogs
+- 12 font options
+- Clearer theme color labels
+- GSPRO Launcher quick-select button
+- Activation API `/api/check-email` endpoint
+- Status messages in UI
+- App icon support in installer
+
+---
+
+## Support & Contact
+
+| Resource | Details |
+|----------|---------|
+| **Company** | NeutroCorp LLC |
+| **Website** | https://www.neutrocorp.com |
+| **Email** | support@neutrocorp.com |
+| **GitHub** | https://github.com/cstk421/SimWoods-Golf |
 
 ---
 
 ## Next Context Prompt
+
+Copy this to continue work in a new Claude session:
 
 ```
 I'm continuing work on SimLock, a .NET 8 WPF kiosk lock screen for golf simulators.
@@ -215,32 +343,24 @@ Activation server: 192.168.88.197 (/home/csolaiman/activation-server/)
 Windows share: //192.168.88.156/Users/cstk421/Downloads/Dev (mounted at /mnt/windev on activation server)
 
 Key files:
-- src/SimLock.Admin/AdminWindow.xaml(.cs) - Admin panel
+- src/SimLock.Admin/AdminWindow.xaml(.cs) - Admin panel (uses WPF type aliases for WinForms compatibility)
 - src/SimLock.Locker/MainWindow.xaml(.cs) - Lock screen
-- src/SimLock.Common/AppConfig.cs - Configuration
-- activation-server/app.py - License server
+- src/SimLock.Common/AppConfig.cs - Configuration (30+ properties)
+- activation-server/app.py - Flask license server
 - installer/SimLock_Setup.iss - Inno Setup installer
 - snaps/SimLock_Admin_Guide.html - User documentation
 
 GitHub: https://github.com/cstk421/SimWoods-Golf
-SSH to activation server: ssh -i ~/.ssh/dms-deploy csolaiman@192.168.88.197
+SSH: ssh -i ~/.ssh/dms-deploy csolaiman@192.168.88.197
 
-Last session (v2.0.2) completed:
-- Added new action types: Open PDF Document, Open Picture
-- Updated dropdown labels: "Start Program", "Open Website"
-- Fixed video download hanging (async stdout/stderr reading)
-- Fixed scrollbar overlap in admin panel tabs
-- Fixed activation server reactivation bug
-- Added app icons to all executables
-- Created Admin Guide HTML with screenshots
-- Created video production script/storyboard
+Build: dotnet publish -c Release -o publish
+Deploy: scp -i ~/.ssh/dms-deploy <file> csolaiman@192.168.88.197:/mnt/windev/<path>
 
-Build commands:
-  dotnet publish -c Release -o publish
-  Then run Inno Setup on installer/SimLock_Setup.iss
-
-To deploy files to Windows share:
-  scp -i ~/.ssh/dms-deploy <file> csolaiman@192.168.88.197:/mnt/windev/<path>
+Current version: v2.0.2
+- All namespace conflicts resolved
+- 5 custom button action types
+- Video download with progress
+- Full documentation complete
 
 Please read summary.md for full project context.
 ```
