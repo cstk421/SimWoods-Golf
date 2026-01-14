@@ -44,7 +44,7 @@ UninstallFilesDir={app}\uninstall
 ; Output settings
 OutputDir=..\installer_output
 OutputBaseFilename=SimLock_Setup
-SetupIconFile=..\Assets\app.ico
+; SetupIconFile=..\Assets\app.ico  ; Uncomment when app.ico is available
 Compression=lzma2
 SolidCompression=yes
 
